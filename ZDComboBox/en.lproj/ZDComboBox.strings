@@ -1,0 +1,9 @@
+/* 
+  ZDComboBox.strings
+  combobox
+
+  Created by Dmitriy Zakharkin on 8/23/15.
+  Copyright (c) 2015 ZDima. All rights reserved.
+*/
+
+"ControllerTypeError" = "Object type for ZDComboBox.topLevelObjects must be of NSArrayController or NSTreeController class";
