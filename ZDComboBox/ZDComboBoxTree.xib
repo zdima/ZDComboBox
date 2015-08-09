@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="ZDComboBoxTree" customModule="combobox" customModuleProvider="target">
+            <connections>
+                <outlet property="itemController" destination="5lR-RW-hkk" id="vUP-Xj-9h6"/>
+                <outlet property="tree" destination="OeQ-1C-zVl" id="LQU-LF-wwb"/>
+                <outlet property="view" destination="c22-O7-iKe" id="HW4-5U-cy4"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="c22-O7-iKe">
+            <rect key="frame" x="0.0" y="0.0" width="218" height="203"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fIM-Po-Lh0">
+                    <rect key="frame" x="0.0" y="0.0" width="218" height="203"/>
+                    <clipView key="contentView" drawsBackground="NO" id="paw-5Z-930">
+                        <rect key="frame" x="1" y="0.0" width="238" height="134"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="pRI-MU-Wqw" id="OeQ-1C-zVl">
+                                <rect key="frame" x="0.0" y="0.0" width="209" height="24"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <size key="intercellSpacing" width="3" height="2"/>
+                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                <tableViewGridLines key="gridStyleMask" dashed="YES"/>
+                                <color key="gridColor" name="controlHighlightColor" catalog="System" colorSpace="catalog"/>
+                                <tableColumns>
+                                    <tableColumn editable="NO" width="206" minWidth="40" maxWidth="1000" id="pRI-MU-Wqw">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Categories">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                        </tableHeaderCell>
+                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" alignment="left" title="Text Cell" drawsBackground="YES" usesSingleLineMode="YES" id="1Wf-gp-koa">
+                                            <font key="font" size="13" name="HelveticaNeue-Light"/>
+                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="seq"/>
+                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
+                                        <connections>
+                                            <binding destination="5lR-RW-hkk" name="value" keyPath="arrangedObjects.title" id="dqa-eq-mfD">
+                                                <dictionary key="options">
+                                                    <bool key="NSConditionallySetsEditable" value="YES"/>
+                                                </dictionary>
+                                            </binding>
+                                        </connections>
+                                    </tableColumn>
+                                </tableColumns>
+                                <connections>
+                                    <action selector="performClick:" target="-2" id="i86-Vx-5h5"/>
+                                    <binding destination="5lR-RW-hkk" name="content" keyPath="arrangedObjects" id="ll7-SV-NuY"/>
+                                    <binding destination="5lR-RW-hkk" name="selectionIndexPaths" keyPath="selectionIndexPaths" previousBinding="ll7-SV-NuY" id="Bpt-0F-gDQ"/>
+                                    <outlet property="delegate" destination="-2" id="b8i-Gm-N6Y"/>
+                                </connections>
+                            </outlineView>
+                        </subviews>
+                        <nil key="backgroundColor"/>
+                    </clipView>
+                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="jKi-s5-Zns">
+                        <rect key="frame" x="1" y="119" width="223" height="15"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </scroller>
+                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="qF8-fQ-mxB">
+                        <rect key="frame" x="224" y="17" width="15" height="102"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </scroller>
+                </scrollView>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="fIM-Po-Lh0" secondAttribute="bottom" id="4rg-V2-2Sk"/>
+                <constraint firstItem="fIM-Po-Lh0" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="7z6-be-aGf"/>
+                <constraint firstAttribute="trailing" secondItem="fIM-Po-Lh0" secondAttribute="trailing" id="DZA-Mk-8kH"/>
+                <constraint firstItem="fIM-Po-Lh0" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" id="kbP-lH-WXo"/>
+            </constraints>
+            <point key="canvasLocation" x="216" y="68.5"/>
+        </customView>
+        <treeController objectClassName="ZDComboBoxItem" editable="NO" childrenKeyPath="childs" avoidsEmptySelection="NO" id="5lR-RW-hkk">
+            <connections>
+                <binding destination="-2" name="sortDescriptors" keyPath="self.recordSortDescriptors" id="8C7-dO-1Bd"/>
+            </connections>
+        </treeController>
+        <userDefaultsController representsSharedInstance="YES" id="dPd-LJ-3bE"/>
+    </objects>
+</document>

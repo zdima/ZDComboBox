@@ -1,0 +1,353 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2C34A7D71B76D38600420C3E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C34A7D61B76D38600420C3E /* AppDelegate.swift */; };
+		2C34A7D91B76D38600420C3E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C34A7D81B76D38600420C3E /* Images.xcassets */; };
+		2C34A7DC1B76D38600420C3E /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C34A7DA1B76D38600420C3E /* MainMenu.xib */; };
+		2C34A7FA1B76D46D00420C3E /* MFCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C34A7F91B76D46D00420C3E /* MFCategory.swift */; };
+		2CB959AC1B8A669F008E9C7E /* ZDComboBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB959A61B8A669F008E9C7E /* ZDComboBox.swift */; };
+		2CB959AD1B8A669F008E9C7E /* ZDComboBoxTree.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CB959A71B8A669F008E9C7E /* ZDComboBoxTree.xib */; };
+		2CB959AE1B8A669F008E9C7E /* ZDComboBoxTreeContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB959A81B8A669F008E9C7E /* ZDComboBoxTreeContent.swift */; };
+		2CB959AF1B8A669F008E9C7E /* ZDComboBoxUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB959A91B8A669F008E9C7E /* ZDComboBoxUtils.swift */; };
+		2CB959B01B8A669F008E9C7E /* ZDPopupWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB959AA1B8A669F008E9C7E /* ZDPopupWindowManager.swift */; };
+		2CB959B11B8A66A9008E9C7E /* ZDComboBox.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2CB959B31B8A66A9008E9C7E /* ZDComboBox.strings */; };
+		2CB959B51B8A67F7008E9C7E /* ZDComboBoxList.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CB959B41B8A67F7008E9C7E /* ZDComboBoxList.xib */; };
+		2CB959B71B8A68E9008E9C7E /* ZDComboBoxListContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB959B61B8A68E9008E9C7E /* ZDComboBoxListContent.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2C34A7D11B76D38600420C3E /* combobox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = combobox.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C34A7D51B76D38600420C3E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2C34A7D61B76D38600420C3E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		2C34A7D81B76D38600420C3E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		2C34A7DB1B76D38600420C3E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		2C34A7F91B76D46D00420C3E /* MFCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MFCategory.swift; sourceTree = "<group>"; };
+		2CB959A61B8A669F008E9C7E /* ZDComboBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ZDComboBox.swift; path = ZDComboBox/ZDComboBox.swift; sourceTree = "<group>"; };
+		2CB959A71B8A669F008E9C7E /* ZDComboBoxTree.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ZDComboBoxTree.xib; path = ZDComboBox/ZDComboBoxTree.xib; sourceTree = "<group>"; };
+		2CB959A81B8A669F008E9C7E /* ZDComboBoxTreeContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ZDComboBoxTreeContent.swift; path = ZDComboBox/ZDComboBoxTreeContent.swift; sourceTree = "<group>"; };
+		2CB959A91B8A669F008E9C7E /* ZDComboBoxUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ZDComboBoxUtils.swift; path = ZDComboBox/ZDComboBoxUtils.swift; sourceTree = "<group>"; };
+		2CB959AA1B8A669F008E9C7E /* ZDPopupWindowManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ZDPopupWindowManager.swift; path = ZDComboBox/ZDPopupWindowManager.swift; sourceTree = "<group>"; };
+		2CB959B21B8A66A9008E9C7E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ZDComboBox.strings; sourceTree = "<group>"; };
+		2CB959B41B8A67F7008E9C7E /* ZDComboBoxList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ZDComboBoxList.xib; path = ZDComboBox/ZDComboBoxList.xib; sourceTree = "<group>"; };
+		2CB959B61B8A68E9008E9C7E /* ZDComboBoxListContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ZDComboBoxListContent.swift; path = ZDComboBox/ZDComboBoxListContent.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2C34A7CE1B76D38600420C3E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2C34A7C81B76D38600420C3E = {
+			isa = PBXGroup;
+			children = (
+				2CB959A41B8A6657008E9C7E /* ZDComboBox */,
+				2C34A7D31B76D38600420C3E /* TestApplication */,
+				2C34A7D21B76D38600420C3E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2C34A7D21B76D38600420C3E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2C34A7D11B76D38600420C3E /* combobox.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2C34A7D31B76D38600420C3E /* TestApplication */ = {
+			isa = PBXGroup;
+			children = (
+				2C34A7D61B76D38600420C3E /* AppDelegate.swift */,
+				2C34A7F91B76D46D00420C3E /* MFCategory.swift */,
+				2C34A7D81B76D38600420C3E /* Images.xcassets */,
+				2C34A7DA1B76D38600420C3E /* MainMenu.xib */,
+				2C34A7D41B76D38600420C3E /* Supporting Files */,
+			);
+			name = TestApplication;
+			path = combobox;
+			sourceTree = "<group>";
+		};
+		2C34A7D41B76D38600420C3E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2C34A7D51B76D38600420C3E /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2CB959A41B8A6657008E9C7E /* ZDComboBox */ = {
+			isa = PBXGroup;
+			children = (
+				2CB959B31B8A66A9008E9C7E /* ZDComboBox.strings */,
+				2CB959A61B8A669F008E9C7E /* ZDComboBox.swift */,
+				2CB959AA1B8A669F008E9C7E /* ZDPopupWindowManager.swift */,
+				2CB959A91B8A669F008E9C7E /* ZDComboBoxUtils.swift */,
+				2CB959A71B8A669F008E9C7E /* ZDComboBoxTree.xib */,
+				2CB959A81B8A669F008E9C7E /* ZDComboBoxTreeContent.swift */,
+				2CB959B41B8A67F7008E9C7E /* ZDComboBoxList.xib */,
+				2CB959B61B8A68E9008E9C7E /* ZDComboBoxListContent.swift */,
+			);
+			name = ZDComboBox;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2C34A7D01B76D38600420C3E /* combobox */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2C34A7EB1B76D38600420C3E /* Build configuration list for PBXNativeTarget "combobox" */;
+			buildPhases = (
+				2C34A7CD1B76D38600420C3E /* Sources */,
+				2C34A7CE1B76D38600420C3E /* Frameworks */,
+				2C34A7CF1B76D38600420C3E /* Resources */,
+				2C9A767C1B77B33C00C7C30A /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = combobox;
+			productName = combobox;
+			productReference = 2C34A7D11B76D38600420C3E /* combobox.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2C34A7C91B76D38600420C3E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0640;
+				ORGANIZATIONNAME = ZDima;
+				TargetAttributes = {
+					2C34A7D01B76D38600420C3E = {
+						CreatedOnToolsVersion = 6.4;
+					};
+				};
+			};
+			buildConfigurationList = 2C34A7CC1B76D38600420C3E /* Build configuration list for PBXProject "combobox" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2C34A7C81B76D38600420C3E;
+			productRefGroup = 2C34A7D21B76D38600420C3E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2C34A7D01B76D38600420C3E /* combobox */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2C34A7CF1B76D38600420C3E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C34A7D91B76D38600420C3E /* Images.xcassets in Resources */,
+				2CB959B51B8A67F7008E9C7E /* ZDComboBoxList.xib in Resources */,
+				2CB959B11B8A66A9008E9C7E /* ZDComboBox.strings in Resources */,
+				2CB959AD1B8A669F008E9C7E /* ZDComboBoxTree.xib in Resources */,
+				2C34A7DC1B76D38600420C3E /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2C9A767C1B77B33C00C7C30A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "[ -x /usr/local/bin/swiftLint ] && /usr/local/bin/swiftLint";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2C34A7CD1B76D38600420C3E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2CB959AE1B8A669F008E9C7E /* ZDComboBoxTreeContent.swift in Sources */,
+				2C34A7FA1B76D46D00420C3E /* MFCategory.swift in Sources */,
+				2C34A7D71B76D38600420C3E /* AppDelegate.swift in Sources */,
+				2CB959AC1B8A669F008E9C7E /* ZDComboBox.swift in Sources */,
+				2CB959B01B8A669F008E9C7E /* ZDPopupWindowManager.swift in Sources */,
+				2CB959AF1B8A669F008E9C7E /* ZDComboBoxUtils.swift in Sources */,
+				2CB959B71B8A68E9008E9C7E /* ZDComboBoxListContent.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		2C34A7DA1B76D38600420C3E /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2C34A7DB1B76D38600420C3E /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		2CB959B31B8A66A9008E9C7E /* ZDComboBox.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2CB959B21B8A66A9008E9C7E /* en */,
+			);
+			name = ZDComboBox.strings;
+			path = ZDComboBox;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2C34A7E91B76D38600420C3E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		2C34A7EA1B76D38600420C3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2C34A7EC1B76D38600420C3E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = combobox/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2C34A7ED1B76D38600420C3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = combobox/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2C34A7CC1B76D38600420C3E /* Build configuration list for PBXProject "combobox" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2C34A7E91B76D38600420C3E /* Debug */,
+				2C34A7EA1B76D38600420C3E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2C34A7EB1B76D38600420C3E /* Build configuration list for PBXNativeTarget "combobox" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2C34A7EC1B76D38600420C3E /* Debug */,
+				2C34A7ED1B76D38600420C3E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2C34A7C91B76D38600420C3E /* Project object */;
+}

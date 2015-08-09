@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="ZDComboBoxList" customModule="combobox" customModuleProvider="target">
+            <connections>
+                <outlet property="itemController" destination="Rcn-fx-yzj" id="wKY-rv-7zW"/>
+                <outlet property="table" destination="thC-cv-Rjj" id="SQI-ea-S83"/>
+                <outlet property="view" destination="c22-O7-iKe" id="HW4-5U-cy4"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="c22-O7-iKe">
+            <rect key="frame" x="0.0" y="0.0" width="218" height="203"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HP7-Tt-TSV">
+                    <rect key="frame" x="0.0" y="0.0" width="218" height="203"/>
+                    <clipView key="contentView" drawsBackground="NO" id="P1d-Sd-Y1v">
+                        <rect key="frame" x="1" y="17" width="238" height="117"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" multipleSelection="NO" autosaveColumns="NO" id="thC-cv-Rjj">
+                                <rect key="frame" x="0.0" y="0.0" width="238" height="117"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <size key="intercellSpacing" width="3" height="2"/>
+                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                <tableViewGridLines key="gridStyleMask" dashed="YES"/>
+                                <color key="gridColor" name="controlHighlightColor" catalog="System" colorSpace="catalog"/>
+                                <tableColumns>
+                                    <tableColumn width="213" minWidth="40" maxWidth="1000" id="xnL-eI-VNI">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                        </tableHeaderCell>
+                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="HGV-zy-JWf">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                        <connections>
+                                            <binding destination="Rcn-fx-yzj" name="value" keyPath="arrangedObjects.title" id="4hr-P9-CIX"/>
+                                        </connections>
+                                    </tableColumn>
+                                </tableColumns>
+                                <connections>
+                                    <action selector="performClick:" target="-2" id="Gg9-y8-Glq"/>
+                                    <outlet property="delegate" destination="-2" id="54F-Fq-uaj"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="0.93333333330000001" alpha="1" colorSpace="calibratedRGB"/>
+                    </clipView>
+                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="oID-Mb-rbe">
+                        <rect key="frame" x="1" y="119" width="223" height="15"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </scroller>
+                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="ghB-Ri-bp4">
+                        <rect key="frame" x="224" y="17" width="15" height="102"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </scroller>
+                </scrollView>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="HP7-Tt-TSV" secondAttribute="bottom" id="Ivn-lk-7yB"/>
+                <constraint firstItem="HP7-Tt-TSV" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" id="Op5-v3-xk2"/>
+                <constraint firstItem="HP7-Tt-TSV" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="tU0-gp-I5S"/>
+                <constraint firstAttribute="trailing" secondItem="HP7-Tt-TSV" secondAttribute="trailing" id="yIM-Nq-SU9"/>
+            </constraints>
+            <point key="canvasLocation" x="216" y="68.5"/>
+        </customView>
+        <arrayController objectClassName="ZDComboBoxItem" editable="NO" id="Rcn-fx-yzj">
+            <connections>
+                <binding destination="-2" name="sortDescriptors" keyPath="self.recordSortDescriptors" id="57p-zg-kkT"/>
+            </connections>
+        </arrayController>
+        <userDefaultsController representsSharedInstance="YES" id="dPd-LJ-3bE"/>
+    </objects>
+</document>
