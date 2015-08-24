@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
                    DESC
   s.homepage     = "https://github.com/zdima/ZDComboBox.git"
   s.screenshots  = "https://raw.githubusercontent.com/zdima/ZDComboBox/master/screen.png"
-  s.license      = { :type => "MIT", :file => "LICENSE.MIT" }
+  s.license      = { :type => "MIT", :file => "LICENSE" }
   s.author       = { "Dmitriy Zakharkin" => "mail@zdima.net" }
   s.platform     = :osx
   s.osx.deployment_target = "10.10"
