@@ -130,14 +130,17 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 	var combo: ZDComboBox?
 
 	var mouseDown: Bool = false
+	var comboBoxBundle: NSBundle? = {
+			return NSBundle(forClass: ZDComboBoxTree.self)
+		}()
 
 	func createPopupContent() -> ZDPopupContent? {
 		if let comboBox = combo {
 			var content: ZDPopupContent
 			if let top = comboBox.topLevelObjects as? NSTreeController {
-				content = ZDComboBoxTree(nibName: "ZDComboBoxTree", bundle: nil)!
+				content = ZDComboBoxTree(nibName: "ZDComboBoxTree", bundle: comboBoxBundle)!
 			} else {
-				content = ZDComboBoxList(nibName: "ZDComboBoxList", bundle: nil)!
+				content = ZDComboBoxList(nibName: "ZDComboBoxList", bundle: comboBoxBundle)!
 			}
 			content.delegate = self
 			let v = content.view
