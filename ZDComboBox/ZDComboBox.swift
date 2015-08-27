@@ -9,7 +9,7 @@
 import Cocoa
 
 @IBDesignable
-class ZDComboBox: NSTextField {
+public class ZDComboBox: NSTextField {
 
 	/// Define key for display name
 	@IBInspectable var displayKey: String!
@@ -24,7 +24,7 @@ class ZDComboBox: NSTextField {
 		}
 	}
 
-	override class func cellClass() -> AnyClass? {
+	override public class func cellClass() -> AnyClass? {
 		return ZDComboBoxCell.self
 	}
 
@@ -34,7 +34,7 @@ class ZDComboBox: NSTextField {
 		setup()
 	}
 
-	required init?(coder: NSCoder) {
+	required public init?(coder: NSCoder) {
 		if let ucoder = coder as? NSKeyedUnarchiver {
 			// replace class for NSTextFieldCell to use cell object for ZDComboBox
 			let superCellClassName = "NSTextFieldCell"
@@ -90,7 +90,7 @@ class ZDComboBox: NSTextField {
 		}
 	}
 
-	override func observeValueForKeyPath( keyPath: String, ofObject object: AnyObject,
+	override public func observeValueForKeyPath( keyPath: String, ofObject object: AnyObject,
 		change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
 			if keyPath == "content" {
 				setContentRootNode()
@@ -123,7 +123,7 @@ class ZDComboBox: NSTextField {
 		self.addSubview(dropDownButton!)
 	}
 
-	override func resizeSubviewsWithOldSize(oldSize: NSSize) {
+	override public func resizeSubviewsWithOldSize(oldSize: NSSize) {
 		// need to move button if frame of a control changed
 		let buttonHeight = frame.size.height
 		let buttonWidth = buttonHeight*ZDComboBoxCell.buttonAspect
@@ -148,7 +148,7 @@ class ZDComboBox: NSTextField {
 		}
 	}
 
-	override func setValue(value: AnyObject?, forKey key: String) {
+	override public func setValue(value: AnyObject?, forKey key: String) {
 		switch(key) {
 		case "displayKey":
 			if let string = value as? String {
@@ -169,7 +169,7 @@ class ZDComboBox: NSTextField {
 		}
 	}
 
-    override func selectText(sender: AnyObject?) {
+    override public func selectText(sender: AnyObject?) {
         super.selectText(sender)
         let insertionPoint: Int = count(stringValue)
         var r: NSRange = NSRange(location: insertionPoint,length: 0)
@@ -178,7 +178,7 @@ class ZDComboBox: NSTextField {
         }
     }
 
-    override func textDidEndEditing(notification: NSNotification) {
+    override public func textDidEndEditing(notification: NSNotification) {
         ZDPopupWindowManager.popupManager.hidePopup()
         let insertionPoint: Int = count(stringValue)
         var r: NSRange = NSRange(location: insertionPoint,length: 0)
