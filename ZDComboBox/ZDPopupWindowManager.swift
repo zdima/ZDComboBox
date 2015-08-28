@@ -194,7 +194,7 @@ class ZDPopupContent: NSViewController {
 	/// filter items again
 	func invalidateFilter() {}
     func moveSelectionUp(up: Bool) {}
-    func moveSelectionTo(string: String? ) -> NSString? {
+    func moveSelectionTo(string: String?, filtered: Bool ) -> NSString? {
         return nil
     }
 	func convertUserObjectToItems() {

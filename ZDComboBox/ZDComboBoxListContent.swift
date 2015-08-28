@@ -105,14 +105,18 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 			return ret
 	}
 
-	override func moveSelectionTo(string: String?) -> NSString? {
+	override func moveSelectionTo(string: String?, filtered: Bool) -> NSString? {
 
 		disableSelectionNotification = true
 
 		var indexes: NSMutableArray = NSMutableArray()
 
-		if string != nil {
-			filter = string!
+		if filtered {
+			if string != nil {
+				filter = string!
+			} else {
+				filter = ""
+			}
 		} else {
 			filter = ""
 		}

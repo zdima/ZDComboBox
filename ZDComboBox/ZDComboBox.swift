@@ -178,6 +178,10 @@ public class ZDComboBox: NSTextField {
         }
     }
 
+	public override func textDidBeginEditing(notification: NSNotification) {
+		
+	}
+
     override public func textDidEndEditing(notification: NSNotification) {
         ZDPopupWindowManager.popupManager.hidePopup()
         let insertionPoint: Int = count(stringValue)

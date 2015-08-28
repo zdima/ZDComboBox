@@ -37,14 +37,14 @@ class ZDComboBoxItem: NSObject {
 
 							if objChilds != nil {
 								for obj in objChilds! {
-								if let item = ZDComboBoxItem.itemWith( obj,
-									hierarchical: hierarchical,
-									displayKey: displayKey,
-									childsKey: childsKey) {
-										childs.append(item)
+									if let item = ZDComboBoxItem.itemWith( obj,
+										hierarchical: hierarchical,
+										displayKey: displayKey,
+										childsKey: childsKey) {
+											childs.append(item)
+									}
 								}
 							}
-					}
 					}
 					return ZDComboBoxItem(title: title, childs: childs, object: obj)
 				} else {
@@ -207,8 +207,22 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 				return false
 			}
 		}
-		return ZDPopupWindowManager.popupManager.showPopupForControl(
+		let rc = ZDPopupWindowManager.popupManager.showPopupForControl(
 			control, withContent: popupContent!.view)
+
+		if var control: ZDComboBox = control as? ZDComboBox {
+			if var editor: NSTextView = control.currentEditor() as? NSTextView {
+				if var s: String = popupContent!.moveSelectionTo(control.stringValue, filtered: false) as? String {
+					if !didDelete {
+						var insertionPoint: Int = editor.selectedRanges.first!.rangeValue.location
+						editor.string = s
+						editor.selectedRange = NSRange( location: insertionPoint, length: count(s) - insertionPoint)
+					}
+				}
+			}
+		}
+
+		return rc
 	}
 
 	func control(control: NSControl,
@@ -232,11 +246,10 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 			if dontSearch {
 				dontSearch = false
 				return
-			} else {
-				showPopupForControl(combo)
 			}
+			showPopupForControl(combo)
 			if var editor: NSTextView = control.currentEditor() as? NSTextView {
-				if var s: String = popupContent!.moveSelectionTo(control.stringValue) as? String {
+				if var s: String = popupContent!.moveSelectionTo(control.stringValue, filtered: true) as? String {
 					if !didDelete {
 						var insertionPoint: Int = editor.selectedRanges.first!.rangeValue.location
 						editor.string = s
@@ -271,7 +284,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 					popupContent!.moveSelectionUp(false)
 				} else {
 					if var editor: NSTextView = control.currentEditor() as? NSTextView {
-						if var s: String = popupContent!.moveSelectionTo(control.stringValue) as? String {
+						if var s: String = popupContent!.moveSelectionTo(control.stringValue, filtered: false) as? String {
 							var insertionPoint: Int = editor.selectedRanges.first!.rangeValue.location
 							editor.string = s
 							editor.selectedRange = NSRange( location: insertionPoint, length: count(s) - insertionPoint)
