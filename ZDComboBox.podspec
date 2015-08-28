@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "ZDComboBox"
-  s.version      = "0.0.1"
+  s.version      = "0.0.3"
   s.summary      = "Ready to use select control for object from a list or a tree of objects."
   s.description  = <<-DESC
                    The ZDComboBox provide easy to use control to select an object from for a list or a tree of objects.
@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.author       = { "Dmitriy Zakharkin" => "mail@zdima.net" }
   s.platform     = :osx
   s.osx.deployment_target = "10.10"
-  s.source       = { :git => "https://github.com/zdima/ZDComboBox.git", :tag => "0.0.1" }
+  s.source       = { :git => "https://github.com/zdima/ZDComboBox.git", :tag => "0.0.3" }
   s.source_files = "ZDComboBox/*.{swift}"
   s.resource     = "ZDComboBox/**/*.{xib,strings}"
 end
