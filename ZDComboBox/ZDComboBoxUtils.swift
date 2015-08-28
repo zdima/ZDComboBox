@@ -23,8 +23,20 @@ class ZDComboBoxItem: NSObject {
 				if hierarchical {
 					var childs: [ZDComboBoxItem] = []
 					if let key = childsKey,
-						let objChilds = obj.valueForKey(key) as? [NSObject] {
-							for obj in objChilds {
+						let childObjs: AnyObject? = obj.valueForKey(key) {
+
+							var objChilds: [NSObject]?
+
+							if childObjs is NSSet {
+								objChilds = (childObjs as! NSSet).allObjects as? [NSObject]
+							} else if childObjs is NSArray {
+								objChilds = childObjs as? [NSObject]
+							} else {
+								objChilds = nil
+							}
+
+							if objChilds != nil {
+								for obj in objChilds! {
 								if let item = ZDComboBoxItem.itemWith( obj,
 									hierarchical: hierarchical,
 									displayKey: displayKey,
@@ -32,6 +44,7 @@ class ZDComboBoxItem: NSObject {
 										childs.append(item)
 								}
 							}
+					}
 					}
 					return ZDComboBoxItem(title: title, childs: childs, object: obj)
 				} else {
