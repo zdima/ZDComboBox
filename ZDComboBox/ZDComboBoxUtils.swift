@@ -14,7 +14,7 @@ class ZDComboBoxItem: NSObject {
 	var childs: [ZDComboBoxItem] = []
 	var representedObject: AnyObject!
 
-	class func itemWith( obj: NSObject,
+	class func itemWith( obj: AnyObject,
 		hierarchical: Bool,
 		displayKey: String,
 		childsKey: String? ) -> ZDComboBoxItem? {
@@ -25,24 +25,22 @@ class ZDComboBoxItem: NSObject {
 					if let key = childsKey,
 						let childObjs: AnyObject? = obj.valueForKey(key) {
 
-							var objChilds: [NSObject]?
+							var objChilds: [AnyObject]!
 
-							if childObjs is NSSet {
-								objChilds = (childObjs as! NSSet).allObjects as? [NSObject]
-							} else if childObjs is NSArray {
-								objChilds = childObjs as? [NSObject]
+							if let set = childObjs as? NSSet {
+								objChilds = set.allObjects
+							} else if let array = childObjs as? NSArray {
+								objChilds = array as [AnyObject]
 							} else {
-								objChilds = nil
+								objChilds = []
 							}
 
-							if objChilds != nil {
-								for obj in objChilds! {
-									if let item = ZDComboBoxItem.itemWith( obj,
-										hierarchical: hierarchical,
-										displayKey: displayKey,
-										childsKey: childsKey) {
-											childs.append(item)
-									}
+							for obj in objChilds {
+								if let item = ZDComboBoxItem.itemWith( obj,
+									hierarchical: hierarchical,
+									displayKey: displayKey,
+									childsKey: childsKey) {
+										childs.append(item)
 								}
 							}
 					}
@@ -150,13 +148,13 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 	func createPopupContent() -> ZDPopupContent? {
 		if let comboBox = combo {
 			var content: ZDPopupContent
-			if let top = comboBox.topLevelObjects as? NSTreeController {
+			if comboBox.topLevelObjects is NSTreeController {
 				content = ZDComboBoxTree(nibName: "ZDComboBoxTree", bundle: comboBoxBundle)!
 			} else {
 				content = ZDComboBoxList(nibName: "ZDComboBoxList", bundle: comboBoxBundle)!
 			}
 			content.delegate = self
-			let v = content.view
+			let _ = content.view
 			if let oCtrl = comboBox.topLevelObjects as? NSTreeController {
 				content.rootNodes = oCtrl.arrangedObjects.childNodes
 			} else if let oCtrl = comboBox.topLevelObjects as? NSArrayController {
@@ -194,7 +192,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 
 	func showPopupForControl(control: NSControl?) -> Bool {
 		if popupContent == nil {
-			if var control: ZDComboBox = control as? ZDComboBox {
+			if let control: ZDComboBox = control as? ZDComboBox {
 				if combo == nil {
 					combo = control
 				}
@@ -210,13 +208,13 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 		let rc = ZDPopupWindowManager.popupManager.showPopupForControl(
 			control, withContent: popupContent!.view)
 
-		if var control: ZDComboBox = control as? ZDComboBox {
-			if var editor: NSTextView = control.currentEditor() as? NSTextView {
-				if var s: String = popupContent!.moveSelectionTo(control.stringValue, filtered: false) as? String {
+		if let control: ZDComboBox = control as? ZDComboBox {
+			if let editor: NSTextView = control.currentEditor() as? NSTextView {
+				if let s: String = popupContent!.moveSelectionTo(control.stringValue, filtered: false) as? String {
 					if !didDelete {
-						var insertionPoint: Int = editor.selectedRanges.first!.rangeValue.location
+						let insertionPoint: Int = editor.selectedRanges.first!.rangeValue.location
 						editor.string = s
-						editor.selectedRange = NSRange( location: insertionPoint, length: count(s) - insertionPoint)
+						editor.selectedRange = NSRange( location: insertionPoint, length: s.characters.count - insertionPoint)
 					}
 				}
 			}
@@ -227,9 +225,9 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 
 	func control(control: NSControl,
 		textView: NSTextView,
-		completions words: [AnyObject],
+		completions words: [String],
 		forPartialWordRange charRange: NSRange,
-		indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [AnyObject] {
+		indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [String] {
 			return []
 	}
 
@@ -241,19 +239,19 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 
 	override func controlTextDidChange(obj: NSNotification) {
 		combo = nil
-		if var control: ZDComboBox = obj.object as? ZDComboBox {
+		if let control: ZDComboBox = obj.object as? ZDComboBox {
 			combo = control
 			if dontSearch {
 				dontSearch = false
 				return
 			}
 			showPopupForControl(combo)
-			if var editor: NSTextView = control.currentEditor() as? NSTextView {
-				if var s: String = popupContent!.moveSelectionTo(control.stringValue, filtered: true) as? String {
+			if let editor: NSTextView = control.currentEditor() as? NSTextView {
+				if let s: String = popupContent!.moveSelectionTo(control.stringValue, filtered: true) as? String {
 					if !didDelete {
-						var insertionPoint: Int = editor.selectedRanges.first!.rangeValue.location
+						let insertionPoint: Int = editor.selectedRanges.first!.rangeValue.location
 						editor.string = s
-						editor.selectedRange = NSRange( location: insertionPoint, length: count(s) - insertionPoint)
+						editor.selectedRange = NSRange( location: insertionPoint, length: s.characters.count - insertionPoint)
 					}
 				}
 			}
@@ -265,10 +263,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 		doCommandBySelector commandSelector: Selector) -> Bool {
 
 			didDelete = false
-			combo = nil
-			if control is ZDComboBox {
-				combo = control as? ZDComboBox
-			}
+
 			if commandSelector == "moveUp:" {
 				if showPopupForControl(control) {
 					popupContent!.moveSelectionUp(true)
@@ -283,11 +278,11 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 				if showPopupForControl(control) {
 					popupContent!.moveSelectionUp(false)
 				} else {
-					if var editor: NSTextView = control.currentEditor() as? NSTextView {
-						if var s: String = popupContent!.moveSelectionTo(control.stringValue, filtered: false) as? String {
-							var insertionPoint: Int = editor.selectedRanges.first!.rangeValue.location
+					if let editor: NSTextView = control.currentEditor() as? NSTextView {
+						if let s: String = popupContent!.moveSelectionTo(control.stringValue, filtered: false) as? String {
+							let insertionPoint: Int = editor.selectedRanges.first!.rangeValue.location
 							editor.string = s
-							editor.selectedRange = NSRange( location: insertionPoint, length: count(s) - insertionPoint)
+							editor.selectedRange = NSRange( location: insertionPoint, length: s.characters.count - insertionPoint)
 						}
 					}
 					return false
@@ -309,7 +304,6 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 
 				var objectValue: AnyObject? = combobox.stringValue
 
-				let keys = bindingInfo.keys
 				if let options:[NSObject:AnyObject] = bindingInfo[NSOptionsKey] as? [NSObject:AnyObject] {
 
 					if let transformer = options[NSValueTransformerBindingOption] as? NSValueTransformer {
@@ -342,7 +336,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 			var pathComponents = path.componentsSeparatedByString(".")
 			if pathComponents.count > 1 {
 				pathComponents.removeLast()
-				let parent = ".".join(pathComponents)
+				let parent = pathComponents.joinWithSeparator(".")
 				return getManagedObjectContext( target, path: parent )
 			}
 			return nil
@@ -354,15 +348,15 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 }
 
 extension String {
-	func localized(#tableName: String?, bundle: NSBundle, comment: String = "") -> String {
+	func localized(tableName tableName: String?, bundle: NSBundle, comment: String = "") -> String {
 		return NSLocalizedString( self, tableName: tableName,
 			bundle: bundle, value: self, comment: comment)
 	}
-	func localized(#tableName: String?, comment: String = "") -> String {
+	func localized(tableName tableName: String?, comment: String = "") -> String {
 		return NSLocalizedString( self, tableName: tableName,
 			bundle: NSBundle.mainBundle(), value: self, comment: comment)
 	}
-	func localized(#comment: String) -> String {
+	func localized(comment comment: String) -> String {
 		return NSLocalizedString( self, tableName: nil,
 			bundle: NSBundle.mainBundle(), value: self, comment: comment)
 	}

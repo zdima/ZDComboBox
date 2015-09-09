@@ -45,7 +45,7 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 	}
 
 	func makeSelectionVisible() {
-		var selRect: NSRect = table!.rectOfRow( table!.selectedRow )
+		let selRect: NSRect = table!.rectOfRow( table!.selectedRow )
 		table.scrollRectToVisible( selRect )
 	}
 
@@ -81,9 +81,6 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 
 			var i: Int = 0
 			var ret: Bool = false
-			let maxCount: Int = children.count
-			let stringLength: Int = count(name) as Int
-			let stringRange: NSRange = NSRange(location: 0, length:stringLength)
 			for object in children {
 				if let item: ZDComboBoxItem = object as? ZDComboBoxItem {
 					indexes.addObject(NSNumber(integer: i))
@@ -109,7 +106,7 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 
 		disableSelectionNotification = true
 
-		var indexes: NSMutableArray = NSMutableArray()
+		let indexes: NSMutableArray = NSMutableArray()
 
 		if filtered {
 			if string != nil {
@@ -141,9 +138,9 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 					itemController.setSelectionIndex(NSNotFound)
 				}
 
-				var sa: NSArray = itemController.selectedObjects;
+				let sa: NSArray = itemController.selectedObjects;
 				if let c: ZDComboBoxItem = sa.firstObject as? ZDComboBoxItem {
-					var s: String = c.title
+					let s: String = c.title
 					disableSelectionNotification = false
 					return s
 				}

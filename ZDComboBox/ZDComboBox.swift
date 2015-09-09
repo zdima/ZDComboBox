@@ -66,7 +66,7 @@ public class ZDComboBox: NSTextField {
 	}
 
 	var isHierarchical: Bool {
-		if let oCtrl = topLevelObjects as? NSTreeController {
+		if topLevelObjects is NSTreeController {
 			return true
 		}
 		return false
@@ -90,8 +90,8 @@ public class ZDComboBox: NSTextField {
 		}
 	}
 
-	override public func observeValueForKeyPath( keyPath: String, ofObject object: AnyObject,
-		change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+	override public func observeValueForKeyPath( keyPath: String?, ofObject object: AnyObject?,
+		change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
 			if keyPath == "content" {
 				setContentRootNode()
 			}
@@ -171,21 +171,20 @@ public class ZDComboBox: NSTextField {
 
     override public func selectText(sender: AnyObject?) {
         super.selectText(sender)
-        let insertionPoint: Int = count(stringValue)
-        var r: NSRange = NSRange(location: insertionPoint,length: 0)
+        let insertionPoint: Int = stringValue.characters.count
+        let r: NSRange = NSRange(location: insertionPoint,length: 0)
         if let textEditor = window!.fieldEditor( true, forObject: self) {
             textEditor.selectedRange = r
         }
     }
 
 	public override func textDidBeginEditing(notification: NSNotification) {
-		
 	}
 
     override public func textDidEndEditing(notification: NSNotification) {
         ZDPopupWindowManager.popupManager.hidePopup()
-        let insertionPoint: Int = count(stringValue)
-        var r: NSRange = NSRange(location: insertionPoint,length: 0)
+        let insertionPoint: Int = stringValue.characters.count
+        let r: NSRange = NSRange(location: insertionPoint,length: 0)
         if let textEditor = window!.fieldEditor( true, forObject: self) {
             textEditor.selectedRange = r
         }
@@ -203,7 +202,7 @@ public class ZDComboBox: NSTextField {
 				oldController.removeObserver(self, forKeyPath: "content")
 			}
 			if let newController = topLevelObjects {
-				let options = NSKeyValueObservingOptions.Old|NSKeyValueObservingOptions.New
+				let options: NSKeyValueObservingOptions = [NSKeyValueObservingOptions.Old, NSKeyValueObservingOptions.New]
 				newController.addObserver( self, forKeyPath: "content",
 					options: options, context: nil)
 			}

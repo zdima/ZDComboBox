@@ -25,7 +25,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 
 	func loadCategories() {
-		var rootNodes: [MFCategory] = [
+		let rootNodes: [MFCategory] = [
 			categoryAuto,
 			categoryBills,
 			categoryHouse,

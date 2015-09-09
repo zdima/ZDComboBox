@@ -39,7 +39,7 @@ class ZDPopupWindowManager: NSObject {
         popupWindow = ZDPopupWindow(contentRect: contentRect,
 			styleMask: NSBorderlessWindowMask,
 			backing: NSBackingStoreType.Buffered,
-			defer: false, screen: nil)
+			`defer`: false, screen: nil)
 
         popupWindow!.movableByWindowBackground = false
         popupWindow!.excludedFromWindowsMenu = true
@@ -64,7 +64,12 @@ class ZDPopupWindowManager: NSObject {
 			originalHeight = content!.bounds.size.height
 
 			pWindow.contentView = content!
-			layoutPopupWindow()
+			do {
+				try layoutPopupWindow()
+			} catch let error as NSError {
+				print("can't layout the popup \(error.localizedDescription)")
+			} catch {
+			}
 			window.addChildWindow(pWindow, ordered: NSWindowOrderingMode.Above)
 
 			NSNotificationCenter.defaultCenter().addObserver(self,
@@ -87,11 +92,11 @@ class ZDPopupWindowManager: NSObject {
     func hidePopup()
     {
 		if let ctrl = control as? ZDComboBox,
-			let window = ctrl.window,
+			let ctrlWindow = ctrl.window,
 			let pWindow = popupWindow {
-				if popupWindow!.visible {
-					popupWindow!.orderOut(self)
-					ctrl.window!.removeChildWindow(popupWindow!)
+				if pWindow.visible {
+					pWindow.orderOut(self)
+					ctrlWindow.removeChildWindow(pWindow)
 					NSNotificationCenter.defaultCenter().removeObserver(self)
 				}
 				ctrl.buttonState = NSOffState
@@ -103,7 +108,7 @@ class ZDPopupWindowManager: NSObject {
         hidePopup()
     }
 
-    func layoutPopupWindow() {
+    func layoutPopupWindow() throws {
         if let ctrl = control, let pWindow = popupWindow {
             var screenFrame: NSRect
 			if let screen = pWindow.screen {
@@ -111,9 +116,9 @@ class ZDPopupWindowManager: NSObject {
             } else if let screen = NSScreen.mainScreen() {
                 screenFrame = screen.visibleFrame
 			} else {
-				NSException(name: "runtime", reason: "no screen", userInfo: nil)
-				return
+				throw NSError(domain: "runtime", code: 1, userInfo: ["reason" : "no screen"])
 			}
+
 			let contentRect: NSRect = ctrl.bounds
 			let controlRect: NSRect = ctrl.flippedRect(ctrl.frame)
             var frame = NSRect(
@@ -160,7 +165,10 @@ class ZDPopupWindowManager: NSObject {
     }
 
     func windowDidResize(note: NSNotification?) {
-        layoutPopupWindow()
+		do { try layoutPopupWindow() }
+		catch let error as NSError {
+			print("can't layout the popup \(error.localizedDescription)")
+		} catch {}
     }
 }
 

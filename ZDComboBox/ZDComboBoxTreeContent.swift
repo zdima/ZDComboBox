@@ -47,7 +47,7 @@ class ZDComboBoxTree: ZDPopupContent, NSOutlineViewDelegate {
 	}
 
 	func makeSelectionVisible() {
-		var selRect: NSRect = tree!.rectOfRow( tree!.selectedRow )
+		let selRect: NSRect = tree!.rectOfRow( tree!.selectedRow )
 		tree.scrollRectToVisible( selRect )
 	}
 
@@ -87,9 +87,6 @@ class ZDComboBoxTree: ZDPopupContent, NSOutlineViewDelegate {
 
 			var i: Int = 0
 			var ret: Bool = false
-			let maxCount: Int = children.count
-			let stringLength: Int = count(name) as Int
-			let stringRange: NSRange = NSRange(location: 0, length:stringLength)
 			for object in children {
 				if let item: ZDComboBoxItem = object as? ZDComboBoxItem {
 					indexes.addObject(NSNumber(integer: i))
@@ -115,7 +112,7 @@ class ZDComboBoxTree: ZDPopupContent, NSOutlineViewDelegate {
 
 		disableSelectionNotification = true
 
-		var indexes: NSMutableArray = NSMutableArray()
+		let indexes: NSMutableArray = NSMutableArray()
 
 		if filtered {
 			if string != nil {
@@ -143,9 +140,9 @@ class ZDComboBoxTree: ZDPopupContent, NSOutlineViewDelegate {
 
 				itemController.setSelectionIndexPath( selection )
 
-				var sa: NSArray = itemController.selectedObjects;
+				let sa: NSArray = itemController.selectedObjects;
 				if let c: ZDComboBoxItem = sa.firstObject as? ZDComboBoxItem {
-					var s: String = c.title
+					let s: String = c.title
 					disableSelectionNotification = false
 					return s;
 				}
