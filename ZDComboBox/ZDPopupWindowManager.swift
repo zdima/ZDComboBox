@@ -205,6 +205,9 @@ class ZDPopupContent: NSViewController {
     func moveSelectionTo(string: String?, filtered: Bool ) -> NSString? {
         return nil
     }
+	func selectedObjects() -> [AnyObject] {
+		return []
+	}
 	func convertUserObjectToItems() {
 		items = []
 		if let nodes = rootNodes as? [NSObject], let comboBox = delegate!.combo {

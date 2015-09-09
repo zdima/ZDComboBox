@@ -157,4 +157,9 @@ class ZDComboBoxTree: ZDPopupContent, NSOutlineViewDelegate {
 		super.convertUserObjectToItems()
 		itemController.content = items
 	}
+
+	override func selectedObjects() -> [AnyObject] {
+		return itemController.selectedObjects
+	}
+
 }

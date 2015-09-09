@@ -293,6 +293,14 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 				ZDPopupWindowManager.popupManager.hidePopup()
 				return true
 			}
+			if commandSelector == "insertTab:" {
+				guard let selection = popupContent?.selectedObjects() else { return false }
+				guard let field = combo else { return false }
+				if field.stringValue.characters.count == 0 { return false }
+				if selection.count == 0 { return false }
+				selectionDidChange(selection, fromUpDown: true)
+				ZDPopupWindowManager.popupManager.hidePopup()
+			}
 			return false
 	}
 
