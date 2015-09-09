@@ -115,6 +115,7 @@ public class ZDComboBox: NSTextField {
 			NSRect(x: frame.size.width-buttonWidth, y: 0,
 				width: buttonWidth, height: buttonHeight))
 		dropDownButton = NSButton(frame: buttonFrame)
+		dropDownButton!.refusesFirstResponder = true
 		dropDownButton!.setButtonType(NSButtonType.PushOnPushOffButton)
 		dropDownButton!.bezelStyle = NSBezelStyle.ShadowlessSquareBezelStyle
 		dropDownButton!.image = NSImage(named: "NSDropDownIndicatorTemplate")
