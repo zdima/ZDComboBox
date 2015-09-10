@@ -94,9 +94,12 @@ class ZDComboBoxCell: NSTextFieldCell {
 	static let buttonAspect: CGFloat = 0.63
 
 	override func drawingRectForBounds(theRect: NSRect) -> NSRect {
-		var textRect = super.drawingRectForBounds(theRect)
-		textRect.size.width -= (3 + textRect.size.height*ZDComboBoxCell.buttonAspect)
-		return textRect
+		if controlView is ZDComboBox {
+			var textRect = super.drawingRectForBounds(theRect)
+			textRect.size.width -= (3 + textRect.size.height*ZDComboBoxCell.buttonAspect)
+			return textRect
+		}
+		return super.drawingRectForBounds(theRect)
 	}
 
 	override func selectWithFrame(aRect: NSRect,
@@ -105,14 +108,15 @@ class ZDComboBoxCell: NSTextFieldCell {
 		delegate anObject: AnyObject?,
 		start selStart: Int,
 		length selLength: Int) {
+			if controlView is ZDComboBox {
 
-			var selectFrame = aRect;
-			selectFrame.size.width -= (3 + selectFrame.size.height*ZDComboBoxCell.buttonAspect)
+				var selectFrame = aRect;
+				selectFrame.size.width -= (3 + selectFrame.size.height*ZDComboBoxCell.buttonAspect)
 
-			NSNotificationCenter.defaultCenter().addObserver(
-				self, selector: "__textChanged:",
-				name: NSTextDidChangeNotification, object: textObj)
-
+				NSNotificationCenter.defaultCenter().addObserver(
+					self, selector: "__textChanged:",
+					name: NSTextDidChangeNotification, object: textObj)
+			}
 			super.selectWithFrame(aRect,
 				inView: controlView,
 				editor: textObj, delegate: anObject,
@@ -120,9 +124,11 @@ class ZDComboBoxCell: NSTextFieldCell {
 	}
 
 	override func endEditing(textObj: NSText) {
-		NSNotificationCenter.defaultCenter().removeObserver(
-			self, name: NSTextDidChangeNotification,
-			object:textObj)
+		if controlView is ZDComboBox {
+			NSNotificationCenter.defaultCenter().removeObserver(
+				self, name: NSTextDidChangeNotification,
+				object:textObj)
+		}
 		super.endEditing(textObj)
 	}
 
