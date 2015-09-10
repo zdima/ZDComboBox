@@ -314,11 +314,26 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 			let path = bindingInfo[NSObservedKeyPathKey as NSString] as? String {
 
 				var objectValue: AnyObject? = combobox.stringValue
-
+				if objectValue == nil {
+					control.setValue( nil, forKeyPath:path)
+					return
+				}
+				guard let stringValue = objectValue as? String else {
+					control.setValue( nil, forKeyPath:path)
+					return
+				}
+				if stringValue.characters.count == 0 {
+					control.setValue( nil, forKeyPath:path)
+					return
+				}
 				if let options:[NSObject:AnyObject] = bindingInfo[NSOptionsKey] as? [NSObject:AnyObject] {
 
 					if let transformer = options[NSValueTransformerBindingOption] as? NSValueTransformer {
 						objectValue = transformer.reverseTransformedValue(objectValue)
+						if objectValue == nil {
+							combobox.stringValue = ""
+							control.setValue( nil, forKeyPath:path)
+						}
 					}
 				}
 
