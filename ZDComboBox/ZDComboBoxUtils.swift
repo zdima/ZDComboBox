@@ -139,7 +139,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 	var didDelete: Bool = false
 	var popupContent: ZDPopupContent? = nil
 	var combo: ZDComboBox?
-
+	var allowSelectionUpdate: Bool = true
 	var mouseDown: Bool = false
 	var comboBoxBundle: NSBundle? = {
 			return NSBundle(forClass: ZDComboBoxTree.self)
@@ -168,6 +168,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 	}
 
 	func selectionDidChange(selector: AnyObject?, fromUpDown updown: Bool) {
+		guard allowSelectionUpdate else {return}
 		if let selection: [AnyObject] = selector as? [AnyObject],
 			let o = selection.first as? ZDComboBoxItem,
 			let comboBox = combo {
@@ -192,6 +193,8 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 
 	func showPopupForControl(control: NSControl?) -> Bool {
 		if popupContent == nil {
+			allowSelectionUpdate = false
+			defer { allowSelectionUpdate = true }
 			if let control: ZDComboBox = control as? ZDComboBox {
 				if combo == nil {
 					combo = control
