@@ -168,7 +168,7 @@ class ZDPopupWindowManager: NSObject {
 		do { try layoutPopupWindow() }
 		catch let error as NSError {
 			print("can't layout the popup \(error.localizedDescription)")
-		} catch {}
+		}
     }
 }
 
