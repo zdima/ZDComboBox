@@ -339,6 +339,22 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 						if objectValue == nil {
 							combobox.stringValue = ""
 							control.setValue( nil, forKeyPath:path)
+						} else {
+							if let managedObject = objectValue as? NSManagedObject {
+								if managedObject.inserted {
+									if let refreshable = combo?.topLevelObjects as? HasRefresh {
+										refreshable.refreshData!()
+									}
+									// we have to update the content of the popup if this object was added
+									if let oCtrl = combo?.topLevelObjects as? NSTreeController {
+										popupContent?.rootNodes = oCtrl.arrangedObjects.childNodes
+									} else if let oCtrl = combo?.topLevelObjects as? NSArrayController {
+										popupContent?.rootNodes = oCtrl.arrangedObjects as? [AnyObject]
+									} else {
+										popupContent?.rootNodes = []
+									}
+								}
+							}
 						}
 					}
 				}

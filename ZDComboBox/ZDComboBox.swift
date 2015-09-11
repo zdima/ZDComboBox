@@ -8,6 +8,15 @@
 
 import Cocoa
 
+/**
+ *  HasRefresh protocol can be used with NSArrayController or NSTreeController to
+ *  trigger a refresh when NSManagedObject has been insered.
+ */
+@objc
+public protocol HasRefresh {
+	optional func refreshData();
+}
+
 @IBDesignable
 public class ZDComboBox: NSTextField {
 
