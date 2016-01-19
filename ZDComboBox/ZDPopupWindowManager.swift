@@ -64,12 +64,7 @@ class ZDPopupWindowManager: NSObject {
 			originalHeight = content!.bounds.size.height
 
 			pWindow.contentView = content!
-			do {
-				try layoutPopupWindow()
-			} catch let error as NSError {
-				print("can't layout the popup \(error.localizedDescription)")
-			} catch {
-			}
+			try! layoutPopupWindow()
 			window.addChildWindow(pWindow, ordered: NSWindowOrderingMode.Above)
 
 			NSNotificationCenter.defaultCenter().addObserver(self,
@@ -165,10 +160,7 @@ class ZDPopupWindowManager: NSObject {
     }
 
     func windowDidResize(note: NSNotification?) {
-		do { try layoutPopupWindow() }
-		catch let error as NSError {
-			print("can't layout the popup \(error.localizedDescription)")
-		}
+        try! layoutPopupWindow()
     }
 }
 
