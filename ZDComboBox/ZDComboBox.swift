@@ -75,7 +75,7 @@ public class ZDComboBox: NSTextField {
 	}
 
 	var isHierarchical: Bool {
-		if let _ = topLevelObjects as? NSTreeController {
+		if topLevelObjects is NSTreeController {
 			return true
 		}
 		return false
