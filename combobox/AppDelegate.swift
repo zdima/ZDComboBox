@@ -14,13 +14,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	@IBOutlet weak var window: NSWindow!
 	@IBOutlet var data: NSTreeController!
 	@IBOutlet var dataList: NSArrayController!
+    @IBOutlet weak var dataA: NSObjectController!
+    @IBOutlet weak var dataB: NSObjectController!
 
-	func applicationDidFinishLaunching(aNotification: NSNotification) {
+	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		// Insert code here to initialize your application
 		loadCategories()
 	}
 
-	func applicationWillTerminate(aNotification: NSNotification) {
+	func applicationWillTerminate(_ aNotification: Notification) {
 		// Insert code here to tear down your application
 	}
 

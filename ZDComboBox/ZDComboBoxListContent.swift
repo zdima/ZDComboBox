@@ -19,7 +19,7 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 		NSSortDescriptor(key: "title", ascending: true)
 	]
 
-	@IBAction func performClick(sender: AnyObject?) {
+	@IBAction func performClick(_ sender: AnyObject?) {
 		// hide popup when user select item by click
 		ZDPopupWindowManager.popupManager.hidePopup()
 	}
@@ -29,7 +29,7 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 			var filteredContent: [ZDComboBoxItem] = []
 
 			for item in items {
-				if let filtered = item.selfOrHasChildWithKey( filter.lowercaseString ) {
+				if let filtered = item.selfOrHasChildWithKey( filter.lowercased() ) {
 					filteredContent.append(filtered)
 				}
 			}
@@ -45,51 +45,61 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 	}
 
 	func makeSelectionVisible() {
-		let selRect: NSRect = table!.rectOfRow( table!.selectedRow )
-		table.scrollRectToVisible( selRect )
+		table.scrollRowToVisible(table.selectedRow)
 	}
 
-	override func moveSelectionUp(up: Bool) {
-		var i: Int = table!.selectedRow
-		if up {
-			i = i-1
-		} else {
-			i = i+1
-		}
-		if i < 0 {
-			return
-		}
-		table.selectRowIndexes( NSIndexSet(index: i), byExtendingSelection: false)
+	override func moveSelectionUp(_ up: Bool) {
+        var i: Int = table!.selectedRow
+        while true {
+            if up {
+                i = i-1
+            } else {
+                i = i+1
+            }
+            if i < 0 || i == table!.numberOfRows {
+                return
+            }
+            if !filter.isEmpty {
+                if let item = (itemController.content as! NSArray).object(at: i) as? ZDComboBoxItem {
+                    if item.isMatch(filter: filter) {
+                        break;
+                    }
+                }
+            } else {
+                break
+            }
+        }
+		table.selectRowIndexes( IndexSet(integer: i), byExtendingSelection: false)
 		makeSelectionVisible()
 	}
 
-	func tableViewSelectionDidChange(notification: NSNotification) {
+	func tableViewSelectionDidChange(_ notification: Notification) {
 		if disableSelectionNotification == false {
-			let sa: NSArray = itemController.selectedObjects
-			delegate!.selectionDidChange( sa, fromUpDown: true)
+			let sa: NSArray = itemController.selectedObjects as NSArray
+			delegate!.selectionDidChange( sa, fromUpDown: true, userInput: filter)
 		}
 	}
 
-	func tableView(tableView: NSTableView,
-		shouldShowCellExpansionForTableColumn tableColumn: NSTableColumn?,
+	func tableView(_ tableView: NSTableView,
+		shouldShowCellExpansionFor tableColumn: NSTableColumn?,
 		row: Int) -> Bool {
 			return false
 	}
 
-	func childByName(name: String, children: [AnyObject],
+	func childByName(_ name: String, children: [Any],
 		indexes: NSMutableArray) -> Bool {
 
 			var i: Int = 0
 			var ret: Bool = false
 			for object in children {
 				if let item: ZDComboBoxItem = object as? ZDComboBoxItem {
-					indexes.addObject(NSNumber(integer: i))
-					if item.title.lowercaseString.hasPrefix(name.lowercaseString) {
+					indexes.add(NSNumber(value: i as Int))
+					if item.title.lowercased().hasPrefix(name.lowercased()) {
 						ret = true
 						break
 					} else {
 						ret = childByName(name,
-							children: (item.childs as NSArray).sortedArrayUsingDescriptors(recordSortDescriptors),
+							children: (item.childs as NSArray).sortedArray(using: recordSortDescriptors),
 							indexes: indexes)
 						if ret == true {
 							break
@@ -102,7 +112,7 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 			return ret
 	}
 
-	override func moveSelectionTo(string: String?, filtered: Bool) -> NSString? {
+	override func moveSelectionTo(_ string: String?, filtered: Bool) -> NSString? {
 
 		disableSelectionNotification = true
 
@@ -119,30 +129,31 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 		}
 
 		if let children = itemController.content as? NSArray {
-			let sortedchildren = children.sortedArrayUsingDescriptors(recordSortDescriptors)
-			if childByName(string!, children:sortedchildren, indexes:indexes) {
-				var selection: NSIndexPath? = nil;
+			let sortedchildren = children.sortedArray(using: recordSortDescriptors)
+			if childByName(string!, children:sortedchildren as [AnyObject], indexes:indexes) {
+				var selection: IndexPath? = nil;
 				for n in indexes {
 					if let num: NSNumber = n as? NSNumber {
 						if selection != nil {
-							selection = selection!.indexPathByAddingIndex(num.integerValue)
+							selection = selection!.appending(IndexPath.Element(num.intValue))
 						} else {
-							selection = NSIndexPath(index: num.integerValue )
+							selection = IndexPath(index: num.intValue )
 						}
 					}
 				}
 
 				if let stringIdx = selection {
-					itemController.setSelectionIndex(stringIdx.indexAtPosition(0))
+                    let idx: Int = stringIdx[0]
+					itemController.setSelectionIndex(idx)
 				} else {
 					itemController.setSelectionIndex(NSNotFound)
 				}
 
-				let sa: NSArray = itemController.selectedObjects;
+				let sa: NSArray = itemController.selectedObjects as NSArray;
 				if let c: ZDComboBoxItem = sa.firstObject as? ZDComboBoxItem {
 					let s: String = c.title
 					disableSelectionNotification = false
-					return s
+					return s as NSString?
 				}
 			}
 		}
@@ -157,7 +168,7 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 	}
 
 	override func selectedObjects() -> [AnyObject] {
-		return itemController.selectedObjects
+		return itemController.selectedObjects as [AnyObject]
 	}
 
 }

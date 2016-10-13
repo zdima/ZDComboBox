@@ -14,11 +14,11 @@ import Cocoa
  */
 @objc
 public protocol HasRefresh {
-	optional func refreshData();
+	@objc optional func refreshData();
 }
 
 @IBDesignable
-public class ZDComboBox: NSTextField {
+open class ZDComboBox: NSTextField {
 
 	/// Define key for display name
 	@IBInspectable var displayKey: String!
@@ -26,6 +26,9 @@ public class ZDComboBox: NSTextField {
 	/// Define key for child list
 	@IBInspectable var childsKey: String?
 
+    /// Define key for child list
+    @IBInspectable var valueType: String?
+    
 	/// NSArrayController or NSTreeController for popup items
 	@IBOutlet      var topLevelObjects: NSObjectController? {
 		didSet {
@@ -33,7 +36,7 @@ public class ZDComboBox: NSTextField {
 		}
 	}
 
-	override public class func cellClass() -> AnyClass? {
+	override open class func cellClass() -> AnyClass? {
 		return ZDComboBoxCell.self
 	}
 
@@ -47,7 +50,7 @@ public class ZDComboBox: NSTextField {
 		if let ucoder = coder as? NSKeyedUnarchiver {
 			// replace class for NSTextFieldCell to use cell object for ZDComboBox
 			let superCellClassName = "NSTextFieldCell"
-			let oldValue: AnyClass? = ucoder.classForClassName(superCellClassName)
+			let oldValue: AnyClass? = ucoder.class(forClassName: superCellClassName)
 			ucoder.setClass(ZDComboBox.cellClass(), forClassName: superCellClassName)
 			super.init(coder: coder)
 			// restore previous setting
@@ -90,7 +93,7 @@ public class ZDComboBox: NSTextField {
 					content.rootNodes = oCtrl.arrangedObjects as? [AnyObject]
 				} else if topLevelObjects != nil {
 					let msg = "ControllerTypeError".localized(tableName: "ZDComboBox")
-					NSException(name: "Invalid argument", reason: msg, userInfo: nil).raise()
+					NSException(name: NSExceptionName(rawValue: "Invalid argument"), reason: msg, userInfo: nil).raise()
 					content.rootNodes = []
 				} else {
 					content.rootNodes = []
@@ -99,21 +102,21 @@ public class ZDComboBox: NSTextField {
 		}
 	}
 
-	override public func observeValueForKeyPath( keyPath: String?, ofObject object: AnyObject?,
-		change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+	override open func observeValue( forKeyPath keyPath: String?, of object: Any?,
+		change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
 			if keyPath == "content" {
 				setContentRootNode()
 			}
 	}
 
-	private var userDelegate: AnyObject?
-	private var cbDelegate: ZDComboFieldDelegate = ZDComboFieldDelegate()
-	private var dropDownButton: NSButton?
+	fileprivate var userDelegate: AnyObject?
+	fileprivate var cbDelegate: ZDComboFieldDelegate = ZDComboFieldDelegate()
+	fileprivate var dropDownButton: NSButton?
 
 	func setup() {
 		if delegate == nil {
 			delegate = cbDelegate
-		} else if !delegate!.isKindOfClass(ZDComboFieldDelegate.self) {
+		} else if !delegate!.isKind(of: ZDComboFieldDelegate.self) {
 			userDelegate = delegate
 			delegate = cbDelegate
 		}
@@ -125,25 +128,25 @@ public class ZDComboBox: NSTextField {
 				width: buttonWidth, height: buttonHeight))
 		dropDownButton = NSButton(frame: buttonFrame)
 		dropDownButton!.refusesFirstResponder = true
-		dropDownButton!.setButtonType(NSButtonType.PushOnPushOffButton)
-		dropDownButton!.bezelStyle = NSBezelStyle.ShadowlessSquareBezelStyle
+		dropDownButton!.setButtonType(NSButtonType.pushOnPushOff)
+		dropDownButton!.bezelStyle = NSBezelStyle.shadowlessSquare
 		dropDownButton!.image = NSImage(named: "NSDropDownIndicatorTemplate")
 		dropDownButton!.target = self
-		dropDownButton!.action = "dropDownButtonClicked:"
+		dropDownButton!.action = #selector(ZDComboBox.dropDownButtonClicked(_:))
 		self.addSubview(dropDownButton!)
 	}
 
-	override public func resizeSubviewsWithOldSize(oldSize: NSSize) {
+	override open func resizeSubviews(withOldSize oldSize: NSSize) {
 		// need to move button if frame of a control changed
 		let buttonHeight = frame.size.height
 		let buttonWidth = buttonHeight*ZDComboBoxCell.buttonAspect
 		dropDownButton!.frame = NSIntegralRect(
 			NSRect(x: frame.size.width-buttonWidth, y: 0,
 				width: buttonWidth, height: buttonHeight))
-		super.resizeSubviewsWithOldSize(oldSize)
+		super.resizeSubviews(withOldSize: oldSize)
 	}
 
-	func dropDownButtonClicked(sender: AnyObject) {
+	func dropDownButtonClicked(_ sender: AnyObject) {
 		if dropDownButton!.state == NSOffState {
 			ZDPopupWindowManager.popupManager.hidePopup()
 		} else {
@@ -151,14 +154,14 @@ public class ZDComboBox: NSTextField {
 				self.window!.makeFirstResponder(self)
 			}
 			if let popupDelegate = delegate as? ZDPopupContentDelegate {
-				if !popupDelegate.showPopupForControl(self) {
+				if popupDelegate.showPopupForControl(self) == .NA {
 					dropDownButton!.state = NSOffState
 				}
 			}
 		}
 	}
 
-	override public func setValue(value: AnyObject?, forKey key: String) {
+	override open func setValue(_ value: Any?, forKey key: String) {
 		switch(key) {
 		case "displayKey":
 			if let string = value as? String {
@@ -172,30 +175,44 @@ public class ZDComboBox: NSTextField {
 			super.setValue(value, forKey: key)
 		}
 	}
+    
+    var myObjectValue: NSObject?
+    
+    open override var objectValue: Any? {
+        set {
+            if let theValue = newValue as? NSObject {
+                myObjectValue = theValue
+                super.objectValue = theValue.value(forKey: displayKey! )
+            }
+        }
+        get {
+            return myObjectValue
+        }
+    }
 
-	dynamic var selectedObject: AnyObject? {
+	dynamic var selectedObject: Any? {
 		didSet {
 			// TODO set value of the text field
 		}
 	}
 
-    override public func selectText(sender: AnyObject?) {
+    override open func selectText(_ sender: Any?) {
         super.selectText(sender)
         let insertionPoint: Int = stringValue.characters.count
         let r: NSRange = NSRange(location: insertionPoint,length: 0)
-        if let textEditor = window!.fieldEditor( true, forObject: self) {
+        if let textEditor = window!.fieldEditor( true, for: self) {
             textEditor.selectedRange = r
         }
     }
 
-	public override func textDidBeginEditing(notification: NSNotification) {
+	open override func textDidBeginEditing(_ notification: Notification) {
 	}
 
-    override public func textDidEndEditing(notification: NSNotification) {
+    override open func textDidEndEditing(_ notification: Notification) {
         ZDPopupWindowManager.popupManager.hidePopup()
         let insertionPoint: Int = stringValue.characters.count
         let r: NSRange = NSRange(location: insertionPoint,length: 0)
-        if let textEditor = window!.fieldEditor( true, forObject: self) {
+        if let textEditor = window!.fieldEditor( true, for: self) {
             textEditor.selectedRange = r
         }
 		if let popupDelegate = delegate as? ZDPopupContentDelegate {
@@ -204,15 +221,15 @@ public class ZDComboBox: NSTextField {
         super.textDidEndEditing(notification)
     }
 
-	private func onObjectCollectionChange(
-		oldValue: NSObjectController?,
+	fileprivate func onObjectCollectionChange(
+		_ oldValue: NSObjectController?,
 		_ newValue: NSObjectController?) {
 			setContentRootNode()
 			if let oldController = oldValue {
 				oldController.removeObserver(self, forKeyPath: "content")
 			}
 			if let newController = topLevelObjects {
-				let options: NSKeyValueObservingOptions = [NSKeyValueObservingOptions.Old, NSKeyValueObservingOptions.New]
+				let options: NSKeyValueObservingOptions = [NSKeyValueObservingOptions.old, NSKeyValueObservingOptions.new]
 				newController.addObserver( self, forKeyPath: "content",
 					options: options, context: nil)
 			}

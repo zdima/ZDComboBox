@@ -10,10 +10,10 @@ import Cocoa
 
 extension NSView {
 
-	func flippedRect( rect: NSRect ) -> NSRect {
+	func flippedRect( _ rect: NSRect ) -> NSRect {
 		var rectRet: NSRect = rect
 		if self.superview != nil {
-			if !self.superview!.flipped {
+			if !self.superview!.isFlipped {
 				rectRet.origin.y = self.superview!.frame.size.height - rectRet.origin.y - rectRet.size.height
 			}
 		}
@@ -23,13 +23,13 @@ extension NSView {
 
 class ZDPopupWindowManager: NSObject {
 
-    private var control: NSControl? = nil
-    private var popupWindow: ZDPopupWindow? = nil
-	private var dropDownButtonObject: NSButton?
-    private var originalHeight: CGFloat = 0
-
+    fileprivate var control: NSControl? = nil
+    fileprivate var popupWindow: ZDPopupWindow? = nil
+	fileprivate var dropDownButtonObject: NSButton?
+    fileprivate var originalHeight: CGFloat = 0
+    
     static var popupManager = ZDPopupWindowManager()
-
+    
     override init() {
         super.init()
 
@@ -38,29 +38,39 @@ class ZDPopupWindowManager: NSObject {
 
         popupWindow = ZDPopupWindow(contentRect: contentRect,
 			styleMask: NSBorderlessWindowMask,
-			backing: NSBackingStoreType.Buffered,
-			`defer`: false, screen: nil)
+			backing: NSBackingStoreType.buffered,
+			defer: false, screen: nil)
 
-        popupWindow!.movableByWindowBackground = false
-        popupWindow!.excludedFromWindowsMenu = true
+        popupWindow!.isMovableByWindowBackground = false
+        popupWindow!.isExcludedFromWindowsMenu = true
         popupWindow!.hasShadow = true
-        popupWindow!.titleVisibility = NSWindowTitleVisibility.Hidden
+        popupWindow!.titleVisibility = NSWindowTitleVisibility.hidden
     }
 
-    func showPopupForControl(userControl: NSControl?, withContent content: NSView?) -> Bool
+    /// Will close previously open drop down list associated with another userControl.
+    /// Open drop down list if not open and associated with userControl.
+    ///
+    /// - parameter userControl: ZDComboBox instance
+    /// - parameter content:     NSView representing the drop down list
+    ///
+    /// - returns: true when drop down list successfully opened. False when can't asscociate userControl with drop down list.
+    func showPopupForControl(_ userControl: NSControl?, withContent content: NSView?) -> PopupOpenStatus
     {
         if control == userControl {
-            return true
+            // already open
+            return PopupOpenStatus.BeenOpen
         }
 
         if control != nil {
+            // close another drop down list
             hidePopup()
+            control = nil
         }
 
-        control = userControl
+		if let ctrl = userControl as? ZDComboBox, let pWindow = popupWindow, let window = ctrl.window {
 
-		if let ctrl = control as? ZDComboBox, let pWindow = popupWindow, let window = ctrl.window {
-
+            control = userControl
+            
 			originalHeight = content!.bounds.size.height
 
 			pWindow.contentView = content!
@@ -70,23 +80,23 @@ class ZDPopupWindowManager: NSObject {
 				print("can't layout the popup \(error.localizedDescription)")
 			} catch {
 			}
-			window.addChildWindow(pWindow, ordered: NSWindowOrderingMode.Above)
+			window.addChildWindow(pWindow, ordered: NSWindowOrderingMode.above)
 
-			NSNotificationCenter.defaultCenter().addObserver(self,
-				selector: "windowDidResize:",
-				name: NSApplicationDidResignActiveNotification,
+			NotificationCenter.default.addObserver(self,
+				selector: #selector(NSWindowDelegate.windowDidResize(_:)),
+				name: NSNotification.Name.NSApplicationDidResignActive,
 				object: ctrl.window )
 
-			NSNotificationCenter.defaultCenter().addObserver(self,
-				selector: "applicationDidResignActive:",
-				name: NSWindowDidResizeNotification,
-				object: NSApplication.sharedApplication() )
+			NotificationCenter.default.addObserver(self,
+				selector: #selector(NSApplicationDelegate.applicationDidResignActive(_:)),
+				name: NSNotification.Name.NSWindowDidResize,
+				object: NSApplication.shared() )
 
 			ctrl.buttonState = NSOnState
-			return true
+			return PopupOpenStatus.Created
 		}
 
-        return false
+        return PopupOpenStatus.NA
     }
 
     func hidePopup()
@@ -94,17 +104,17 @@ class ZDPopupWindowManager: NSObject {
 		if let ctrl = control as? ZDComboBox,
 			let ctrlWindow = ctrl.window,
 			let pWindow = popupWindow {
-				if pWindow.visible {
+				if pWindow.isVisible {
 					pWindow.orderOut(self)
 					ctrlWindow.removeChildWindow(pWindow)
-					NSNotificationCenter.defaultCenter().removeObserver(self)
+					NotificationCenter.default.removeObserver(self)
 				}
 				ctrl.buttonState = NSOffState
         }
         control = nil
     }
 
-    func applicationDidResignActive(node: NSNotification?) {
+    func applicationDidResignActive(_ node: Notification?) {
         hidePopup()
     }
 
@@ -113,7 +123,7 @@ class ZDPopupWindowManager: NSObject {
             var screenFrame: NSRect
 			if let screen = pWindow.screen {
                 screenFrame = screen.visibleFrame
-            } else if let screen = NSScreen.mainScreen() {
+            } else if let screen = NSScreen.main() {
                 screenFrame = screen.visibleFrame
 			} else {
 				throw NSError(domain: "runtime", code: 1, userInfo: ["reason" : "no screen"])
@@ -140,7 +150,7 @@ class ZDPopupWindowManager: NSObject {
         }
     }
 
-	func adjustToScreen(srcFrame: NSRect, _ screenFrame: NSRect, _ ctrl: NSControl) -> NSRect {
+	func adjustToScreen(_ srcFrame: NSRect, _ screenFrame: NSRect, _ ctrl: NSControl) -> NSRect {
 		let screenRect = ctrl.window!.frame
 		let contentRect: NSRect = ctrl.bounds
 		var frame = srcFrame
@@ -160,11 +170,11 @@ class ZDPopupWindowManager: NSObject {
 		return frame
 	}
 
-    func windowDidResignKey(note: NSNotification?) {
+    func windowDidResignKey(_ note: Notification?) {
         hidePopup()
     }
 
-    func windowDidResize(note: NSNotification?) {
+    func windowDidResize(_ note: Notification?) {
 		do { try layoutPopupWindow() }
 		catch let error as NSError {
 			print("can't layout the popup \(error.localizedDescription)")
@@ -174,14 +184,21 @@ class ZDPopupWindowManager: NSObject {
 
 @objc(ZDPopupWindow)
 class ZDPopupWindow: NSWindow {
-    override var canBecomeKeyWindow: Bool { get { return false } }
+    override var canBecomeKey: Bool { get { return false } }
+}
+
+@objc enum PopupOpenStatus: Int {
+    case Created
+    case BeenOpen
+    case NA
 }
 
 @objc protocol ZDPopupContentDelegate {
 
-    func selectionDidChange( selector: AnyObject?, fromUpDown updown: Bool );
+    
+    func selectionDidChange( _ selector: AnyObject?, fromUpDown updown: Bool, userInput: String? );
 	func updateBindingProperty();
-	func showPopupForControl(control: NSControl?) -> Bool;
+	func showPopupForControl(_ control: NSControl?) -> PopupOpenStatus;
 	var combo: ZDComboBox? { get set }
 }
 
@@ -201,8 +218,8 @@ class ZDPopupContent: NSViewController {
 	}
 	/// filter items again
 	func invalidateFilter() {}
-    func moveSelectionUp(up: Bool) {}
-    func moveSelectionTo(string: String?, filtered: Bool ) -> NSString? {
+    func moveSelectionUp(_ up: Bool) {}
+    func moveSelectionTo(_ string: String?, filtered: Bool ) -> NSString? {
         return nil
     }
 	func selectedObjects() -> [AnyObject] {

@@ -8,7 +8,13 @@
 
 import Foundation
 
-public class MFCategory: NSObject {
+@objc(MFCategory)
+open class MFCategory: NSObject, NSCopying {
+
+    public override init() {
+        name = ""
+        categories = []
+    }
 	public init( name inName: String, categories subs: [AnyObject] ) {
 		name = inName
 		if let categoryList = subs as? [MFCategory] {
@@ -17,20 +23,31 @@ public class MFCategory: NSObject {
 			categories = []
 		}
 	}
-	public var name: String = ""
-	public var categories: [MFCategory] = []
+    
+    required public init( src: MFCategory ) {
+        name = src.name
+        categories = src.categories
+    }
+    
+    public func copy(with zone: NSZone? = nil) -> Any
+    {
+        return type(of:self).init(src: self)
+    }
+    
+	open var name: String = ""
+	open var categories: [MFCategory] = []
 
-	public override func valueForKey(key: String) -> AnyObject? {
+	open override func value(forKey key: String) -> Any? {
 		switch(key) {
 		case "name":
 			return name
 		case "categories":
 			return categories
 		default:
-			return super.valueForKey(key)
+			return super.value(forKey: key)
 		}
 	}
-	public override func setValue(value: AnyObject?, forKey key: String) {
+	open override func setValue(_ value: Any?, forKey key: String) {
 		switch(key) {
 		case "name":
 			if let string = value as? String {
@@ -45,7 +62,7 @@ public class MFCategory: NSObject {
 		}
 	}
 
-	public func selfOrHasChildWithKey( key: String ) -> MFCategory? {
+	open func selfOrHasChildWithKey( _ key: String ) -> MFCategory? {
 		if categories.count > 0 {
 			var filtered: [MFCategory] = []
 
@@ -57,11 +74,11 @@ public class MFCategory: NSObject {
 
 			if filtered.count > 0 {
 				return MFCategory( name: name, categories: filtered )
-			} else if name.lowercaseString.rangeOfString(key) != nil {
+			} else if name.lowercased().range(of: key) != nil {
 				return MFCategory( name: name, categories: [] )
 			}
 		} else {
-			if name.lowercaseString.rangeOfString(key) != nil {
+			if name.lowercased().range(of: key) != nil {
 				return self
 			}
 		}
