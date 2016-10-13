@@ -449,11 +449,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
                             // managed object
                             print("control instance of managed object must have transformer optoin set")
                         } else {
-                            // if valueClass.isSubclass(of: NSString.self) {
                             objectValue = stringValue
-//                            } else {
-//                                print("control instance with type \(valueType) not supported")
-//                                objectValue = nil
                         }
                         if objectValue != nil {
                             var nodes: [AnyObject]?
