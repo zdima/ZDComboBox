@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
-  s.name         = "ZDComboBox-Swift2"
-  s.version      = "0.0.1"
+  s.name         = "ZDComboBox-Swift3"
+  s.version      = "0.1.2"
   s.summary      = "Ready to use select control for object from a list or a tree of objects."
   s.description  = <<-DESC
                    The ZDComboBox provide easy to use control to select an object from for a list or a tree of objects.
@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
                      2) the attribute name for child nodes,
                      3) and NSArrayController or NSTreeController to provide list of the elements,
 
-                   You can bind to control's value as well. 
+                   You can bind to control's value as well and it works with NSManagedObject.. 
 
                    DESC
   s.homepage     = "https://github.com/zdima/ZDComboBox.git"
@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.author       = { "Dmitriy Zakharkin" => "mail@zdima.net" }
   s.platform     = :osx
   s.osx.deployment_target = "10.10"
-  s.source       = { :git => "https://github.com/zdima/ZDComboBox.git", :tag => "SW2.#{s.version}" }
+  s.source       = { :git => "https://github.com/zdima/ZDComboBox.git", :tag => "SW3.#{s.version}" }
   s.source_files = "ZDComboBox/*.{swift}"
   s.resource     = "ZDComboBox/**/*.{xib,strings}"
 end
