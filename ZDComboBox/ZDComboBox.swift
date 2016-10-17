@@ -17,6 +17,11 @@ public protocol HasRefresh {
 	@objc optional func refreshData();
 }
 
+@objc
+public protocol ZDComboBoxDelegate {
+    func getTopLevelObjects() -> NSObjectController?;
+}
+
 @IBDesignable
 open class ZDComboBox: NSTextField {
 
@@ -26,9 +31,6 @@ open class ZDComboBox: NSTextField {
 	/// Define key for child list
 	@IBInspectable var childsKey: String?
 
-    /// Define key for child list
-    @IBInspectable var valueType: String?
-    
 	/// NSArrayController or NSTreeController for popup items
 	@IBOutlet      var topLevelObjects: NSObjectController? {
 		didSet {
@@ -36,6 +38,16 @@ open class ZDComboBox: NSTextField {
 		}
 	}
 
+    @IBOutlet var comboboxDelegate: ZDComboBoxDelegate? {
+        didSet {
+            if comboboxDelegate != nil {
+                if let ctrl = comboboxDelegate!.getTopLevelObjects() {
+                    self.topLevelObjects = ctrl
+                }
+            }
+        }
+    }
+    
 	override open class func cellClass() -> AnyClass? {
 		return ZDComboBoxCell.self
 	}
@@ -120,6 +132,7 @@ open class ZDComboBox: NSTextField {
 			userDelegate = delegate
 			delegate = cbDelegate
 		}
+        cbDelegate.combo = self
 		// setup drop down button
 		let buttonHeight = frame.size.height
 		let buttonWidth = buttonHeight*ZDComboBoxCell.buttonAspect
@@ -180,10 +193,19 @@ open class ZDComboBox: NSTextField {
     
     open override var objectValue: Any? {
         set {
-            if let theValue = newValue as? NSObject {
-                myObjectValue = theValue
-                super.objectValue = theValue.value(forKey: displayKey! )
+            if newValue == nil {
+                super.objectValue = nil
+                return
             }
+            if let cbdelegate = delegate as? ZDComboFieldDelegate {
+                myObjectValue = cbdelegate.objectValue(by: newValue as? AnyObject) as! NSObject?
+            }
+            if myObjectValue != nil {
+                super.objectValue = myObjectValue!.value(forKey: displayKey! )
+            } else {
+                super.objectValue = ""
+            }
+            return
         }
         get {
             return myObjectValue

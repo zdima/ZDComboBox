@@ -169,7 +169,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 	var dontSearch: Bool = false
 	var didDelete: Bool = false
 	var popupContent: ZDPopupContent? = nil
-	var combo: ZDComboBox?
+	weak var combo: ZDComboBox?
 	var allowSelectionUpdate: Bool = true
 	var mouseDown: Bool = false
 	var comboBoxBundle: Bundle? = {
@@ -392,107 +392,101 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
         }
         return classType
     }
+    
+    func objectValue( by newValue: AnyObject? ) -> AnyObject? {
+        
+        if newValue == nil {
+            return nil
+        }
+        
+        var myObjectValue: AnyObject? = nil
+        guard let combobox = combo else { return nil }
+        
+        let stringValue: String!
+        if newValue! is String {
+            stringValue = newValue as! String
+            if stringValue.isEmpty {
+                return nil
+            }
+        } else if combobox.topLevelObjects != nil , let nsObject = newValue as? NSObject , type(of: nsObject) == combobox.topLevelObjects!.objectClass {
+            return nsObject
+        } else {
+            Swift.print("trying to set value of type \(type(of: newValue!)) to ZDComboBox with no topLevelObjects")
+            return nil
+        }
+        
+        if let bindingInfo:[AnyHashable: Any] = combobox.infoForBinding(NSValueBinding),
+            // let control: NSObject = bindingInfo[NSObservedObjectKey as NSString] as? NSObject,
+            // let path = bindingInfo[NSObservedKeyPathKey as NSString] as? String,
+            let options:[AnyHashable: Any] = bindingInfo[NSOptionsKey] as? [AnyHashable: Any],
+            let transformer = options[NSValueTransformerBindingOption] as? ValueTransformer {
+            
+            return transformer.reverseTransformedValue(stringValue) as AnyObject?
+        }
+        
+        if combobox.topLevelObjects is NSArrayController {
+            return objectWith(displayKey: combobox.displayKey, equal: stringValue,
+                                                  in: (combobox.topLevelObjects as! NSArrayController).arrangedObjects as! [AnyObject] ) as! NSObject?
+        } else if combobox.topLevelObjects is NSTreeController {
+            if let node = objectWith(displayKey: combobox.displayKey, equal: stringValue,
+                                                in: ((combobox.topLevelObjects as! NSTreeController).arrangedObjects as AnyObject).children as [NSTreeNode]? ) {
+                
+                return (node as! NSTreeNode).representedObject as! NSObject
+            }
+        }
+
+        if combobox.topLevelObjects == nil {
+            Swift.print("delegate's topLevelObjects is not set")
+        } else {
+            Swift.print("delegate's topLevelObjects is not instance of NSArrayController or NSTreeController")
+        }
+
+        return nil
+    }
 
 	func updateBindingProperty() {
-		if let combobox = combo,
+		if let combobox = combo ,
 			let bindingInfo:[AnyHashable: Any] = combobox.infoForBinding(NSValueBinding),
-			let control: NSObject = bindingInfo[NSObservedObjectKey as NSString] as? NSObject,
-			let path = bindingInfo[NSObservedKeyPathKey as NSString] as? String {
+			let path = bindingInfo[NSObservedKeyPathKey as NSString] as? String,
+            let control: NSObject = bindingInfo[NSObservedObjectKey as NSString] as? NSObject {
 
             // var objectValue: AnyObject? = combobox.stringValue as AnyObject?
             if combobox.stringValue.isEmpty {
-                control.setValue( nil, forKeyPath:path)
+                control.setValue( nil, forKeyPath: path)
                 return
             }
-            var objectValue: Any?
-            let stringValue = combobox.stringValue
 
-            if let options:[AnyHashable: Any] = bindingInfo[NSOptionsKey] as? [AnyHashable: Any] {
-                
-                if let transformer = options[NSValueTransformerBindingOption] as? ValueTransformer {
-                    objectValue = transformer.reverseTransformedValue(stringValue) as AnyObject?
-                    if objectValue == nil {
-                        combobox.stringValue = ""
-                        control.setValue( nil, forKeyPath:path)
-                    } else {
-                        if let managedObject = objectValue as? NSManagedObject {
-                            if managedObject.isInserted {
-                                if let refreshable = combo!.topLevelObjects as? HasRefresh {
-                                    refreshable.refreshData!()
-                                }
-                                // we have to update the content of the popup if this object was added
-                                if let oCtrl = combo!.topLevelObjects as? NSTreeController {
-                                    popupContent!.rootNodes = (oCtrl.arrangedObjects as AnyObject).children as [NSTreeNode]?
-                                } else if let oCtrl = combo?.topLevelObjects as? NSArrayController {
-                                    popupContent!.rootNodes = oCtrl.arrangedObjects as? [AnyObject]
-                                } else {
-                                    popupContent!.rootNodes = []
-                                }
-                            }
-                        }
+            var objectValue = self.objectValue(by: combobox.stringValue as AnyObject?)
+          
+            if let managedObject = objectValue as? NSManagedObject {
+                if managedObject.isInserted {
+                    if let refreshable = combobox.topLevelObjects as? HasRefresh {
+                        refreshable.refreshData!()
                     }
-                    // get context of the object refering by path
-                    let destinationMOC: NSManagedObjectContext? = getManagedObjectContext( control, path: path )
-                    let sourceMOC: NSManagedObjectContext?
-                    if let objectValueAsManagedObject = objectValue as? NSManagedObject {
-                        sourceMOC = objectValueAsManagedObject.managedObjectContext
-                        
-                        if destinationMOC != sourceMOC {
-                            if let moc = destinationMOC {
-                                objectValue = moc.object(with: objectValueAsManagedObject.objectID)
-                            }
-                        }
-                    }
-                } else if let valueType = combobox.valueType {
-                    if let valueClass = classTypeFromString(name: valueType) {
-                        if valueClass.isSubclass(of: NSManagedObject.self) {
-                            // managed object
-                            print("control instance of managed object must have transformer optoin set")
-                        } else {
-                            objectValue = stringValue
-                        }
-                        if objectValue != nil {
-                            var nodes: [AnyObject]?
-                            if let oCtrl = combobox.topLevelObjects as? NSTreeController {
-                                nodes = oCtrl.arrangedObjects as? [AnyObject]
-                            } else if let oCtrl = combobox.topLevelObjects as? NSArrayController {
-                                nodes = oCtrl.arrangedObjects as? [AnyObject]
-                            } else if combobox.topLevelObjects != nil {
-                                let msg = "ControllerTypeError".localized(tableName: "ZDComboBox")
-                                NSException(name: NSExceptionName(rawValue: "Invalid argument"), reason: msg, userInfo: nil).raise()
-                            }
-                            if nodes != nil {
-                                for node in nodes! {
-                                    if let nodeValue = node.value(forKey: combobox.displayKey) as? String {
-                                        if nodeValue == objectValue as! String {
-                                            objectValue = node
-                                            break
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    // direct binding to an object
-                    // find item with exact name as text field
+                    // we have to update the content of the popup if this object was added
                     if let oCtrl = combobox.topLevelObjects as? NSTreeController {
-                        var nodes: [NSTreeNode]?
-                        nodes = (oCtrl.arrangedObjects as AnyObject).children
-                        objectValue = objectWith(displayKey: combobox.displayKey, equal: stringValue, in: nodes )
+                        popupContent!.rootNodes = (oCtrl.arrangedObjects as AnyObject).children as [NSTreeNode]?
                     } else if let oCtrl = combobox.topLevelObjects as? NSArrayController {
-                        for item in (oCtrl.arrangedObjects as? [NSObject])! {
-                            if item.value(forKey: combobox.displayKey) as? String == stringValue {
-                                objectValue = item
-                                break
-                            }
+                        popupContent!.rootNodes = oCtrl.arrangedObjects as? [AnyObject]
+                    } else {
+                        popupContent!.rootNodes = []
+                    }
+                }
+                
+                // get context of the object refering by path
+                let destinationMOC: NSManagedObjectContext? = getManagedObjectContext( control, path: path )
+                let sourceMOC: NSManagedObjectContext?
+                if let objectValueAsManagedObject = objectValue as? NSManagedObject {
+                    sourceMOC = objectValueAsManagedObject.managedObjectContext
+                    
+                    if destinationMOC != sourceMOC {
+                        if let moc = destinationMOC {
+                            objectValue = moc.object(with: objectValueAsManagedObject.objectID)
                         }
-                    } else if combobox.topLevelObjects != nil {
-                        let msg = "ControllerTypeError".localized(tableName: "ZDComboBox")
-                        NSException(name: NSExceptionName(rawValue: "Invalid argument"), reason: msg, userInfo: nil).raise()
                     }
                 }
             }
+
             if let obj = objectValue as? NSTreeNode {
                 control.setValue( obj.representedObject, forKey: path)
             } else {
@@ -501,21 +495,29 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 		}
 	}
     
-    func objectWith( displayKey: String, equal searchTerm: String, in nodes: [NSTreeNode]? ) -> AnyObject? {
+    func objectWith( displayKey: String, equal searchTerm: String, in nodes: [AnyObject]? ) -> AnyObject? {
         if nodes == nil {
             return nil
         }
         for node in nodes! {
-            if let obj: AnyObject = node.representedObject as AnyObject? {
-                if let nodeValue = obj.value(forKey: displayKey) as? String {
+            if node is NSTreeNode {
+                if let obj: AnyObject = node.representedObject as AnyObject? {
+                    if let nodeValue = obj.value(forKey: displayKey) as? String {
+                        if nodeValue == searchTerm {
+                            return node
+                        }
+                    }
+                }
+                let obj = objectWith(displayKey: displayKey, equal: searchTerm, in: (node as! NSTreeNode).children! as [AnyObject] )
+                if obj != nil {
+                    return obj
+                }
+            } else {
+                if let nodeValue = node.value(forKey: displayKey) as? String {
                     if nodeValue == searchTerm {
                         return node
                     }
                 }
-            }
-            let obj = objectWith(displayKey: displayKey, equal: searchTerm, in: node.children)
-            if obj != nil {
-                return obj
             }
         }
         return nil
