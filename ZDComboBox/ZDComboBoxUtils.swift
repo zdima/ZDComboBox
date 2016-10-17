@@ -399,7 +399,6 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
             return nil
         }
         
-        var myObjectValue: AnyObject? = nil
         guard let combobox = combo else { return nil }
         
         let stringValue: String!
@@ -426,7 +425,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
         
         if combobox.topLevelObjects is NSArrayController {
             return objectWith(displayKey: combobox.displayKey, equal: stringValue,
-                                                  in: (combobox.topLevelObjects as! NSArrayController).arrangedObjects as! [AnyObject] ) as! NSObject?
+                                                  in: (combobox.topLevelObjects as! NSArrayController).arrangedObjects as? [AnyObject] ) as! NSObject?
         } else if combobox.topLevelObjects is NSTreeController {
             if let node = objectWith(displayKey: combobox.displayKey, equal: stringValue,
                                                 in: ((combobox.topLevelObjects as! NSTreeController).arrangedObjects as AnyObject).children as [NSTreeNode]? ) {

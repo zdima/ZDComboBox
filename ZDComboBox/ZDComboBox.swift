@@ -198,7 +198,7 @@ open class ZDComboBox: NSTextField {
                 return
             }
             if let cbdelegate = delegate as? ZDComboFieldDelegate {
-                myObjectValue = cbdelegate.objectValue(by: newValue as? AnyObject) as! NSObject?
+                myObjectValue = cbdelegate.objectValue(by: newValue as AnyObject) as! NSObject?
             }
             if myObjectValue != nil {
                 super.objectValue = myObjectValue!.value(forKey: displayKey! )
