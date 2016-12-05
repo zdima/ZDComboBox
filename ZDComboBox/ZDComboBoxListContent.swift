@@ -91,6 +91,11 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 
 			var i: Int = 0
 			var ret: Bool = false
+        
+			if name.isEmpty {
+				return false
+			}
+        
 			for object in children {
 				if let item: ZDComboBoxItem = object as? ZDComboBoxItem {
 					indexes.add(NSNumber(value: i as Int))
@@ -119,7 +124,7 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 		let indexes: NSMutableArray = NSMutableArray()
 
 		if filtered {
-			if string != nil {
+			if string != nil && !string!.isEmpty {
 				filter = string!
 			} else {
 				filter = ""
