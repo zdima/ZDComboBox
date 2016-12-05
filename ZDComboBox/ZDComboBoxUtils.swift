@@ -393,6 +393,39 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
         return classType
     }
     
+    func managed( objectInContext: AnyObject?) ->AnyObject? {
+        if objectInContext == nil {
+            return nil
+        }
+        if let combobox = combo ,
+            let bindingInfo:[AnyHashable: Any] = combobox.infoForBinding(NSValueBinding),
+            let path = bindingInfo[NSObservedKeyPathKey as NSString] as? String,
+            let control: NSObject = bindingInfo[NSObservedObjectKey as NSString] as? NSObject {
+
+            let destinationMOC: NSManagedObjectContext? = getManagedObjectContext( control, path: path )
+
+            if let objectValueAsManagedObject = objectInContext as? NSManagedObject {
+                let sourceMOC = objectValueAsManagedObject.managedObjectContext
+                if destinationMOC != sourceMOC {
+                    if objectValueAsManagedObject.isInserted {
+                        do {
+                            try objectValueAsManagedObject.managedObjectContext!.save()
+                        } catch let error as NSError {
+                            Swift.print( "failed to save context of the newly created object" )
+                        }
+                        if let refreshable = combobox.topLevelObjects as? HasRefresh {
+                            refreshable.refreshData!()
+                        }
+                    }
+                    if let moc = destinationMOC {
+                        return moc.object(with: objectValueAsManagedObject.objectID)
+                    }
+                }
+            }
+        }
+        return objectInContext
+    }
+    
     func objectValue( by newValue: AnyObject? ) -> AnyObject? {
         
         if newValue == nil {
