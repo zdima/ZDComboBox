@@ -453,7 +453,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
             let options:[AnyHashable: Any] = bindingInfo[NSOptionsKey] as? [AnyHashable: Any],
             let transformer = options[NSValueTransformerBindingOption] as? ValueTransformer {
             
-            return transformer.reverseTransformedValue(stringValue) as AnyObject?
+            return managed(objectInContext: transformer.reverseTransformedValue(stringValue) as AnyObject? )
         }
         
         if combobox.topLevelObjects is NSArrayController {
@@ -463,7 +463,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
             if let node = objectWith(displayKey: combobox.displayKey, equal: stringValue,
                                                 in: ((combobox.topLevelObjects as! NSTreeController).arrangedObjects as AnyObject).children as [NSTreeNode]? ) {
                 
-                return (node as! NSTreeNode).representedObject as! NSObject
+                return managed(objectInContext: (node as! NSTreeNode).representedObject as! AnyObject?)
             }
         }
 
@@ -504,25 +504,12 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
                         popupContent!.rootNodes = []
                     }
                 }
-                
-                // get context of the object refering by path
-                let destinationMOC: NSManagedObjectContext? = getManagedObjectContext( control, path: path )
-                let sourceMOC: NSManagedObjectContext?
-                if let objectValueAsManagedObject = objectValue as? NSManagedObject {
-                    sourceMOC = objectValueAsManagedObject.managedObjectContext
-                    
-                    if destinationMOC != sourceMOC {
-                        if let moc = destinationMOC {
-                            objectValue = moc.object(with: objectValueAsManagedObject.objectID)
-                        }
-                    }
-                }
             }
 
             if let obj = objectValue as? NSTreeNode {
-                control.setValue( obj.representedObject, forKey: path)
+                control.setValue( managed(objectInContext: obj.representedObject as AnyObject?), forKey: path)
             } else {
-                control.setValue( objectValue, forKeyPath:path)
+                control.setValue( managed(objectInContext: objectValue), forKeyPath:path)
             }
 		}
 	}
