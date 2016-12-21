@@ -222,7 +222,7 @@ open class ZDComboBox: NSTextField {
         super.selectText(sender)
         let insertionPoint: Int = stringValue.characters.count
         let r: NSRange = NSRange(location: insertionPoint,length: 0)
-        if let textEditor = window!.fieldEditor( true, for: self) {
+        if let w = window, let textEditor = w.fieldEditor( true, for: self) {
             textEditor.selectedRange = r
         }
     }
