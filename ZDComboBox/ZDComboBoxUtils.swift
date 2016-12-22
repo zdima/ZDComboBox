@@ -160,6 +160,43 @@ class ZDComboBoxCell: NSTextFieldCell {
 	func __textChanged(_ notif: Notification) {
 		self.controlView!.needsDisplay = true
 	}
+
+	override func draw(withFrame cellFrame: NSRect, in controlView: NSView) {
+
+		if let cb = controlView as? ZDComboBox {
+			if cb.underlineField {
+				if self.isEditable {
+					NSGraphicsContext.current()!.saveGraphicsState()
+
+					NSGraphicsContext.current()!.cgContext.setShouldAntialias(false)
+
+					let bounds: NSRect = NSMakeRect(0, 0, cellFrame.width, cellFrame.height)
+
+					if cb.underlineColor != nil {
+						cb.underlineColor!.set()
+					} else {
+						NSColor(calibratedRed: 0.9, green: 0.9, blue: 0.9, alpha: 1).set()
+					}
+
+					let buttonWidth = cellFrame.size.height*ZDComboBoxCell.buttonAspect
+					let bottomLine: NSBezierPath = NSBezierPath()
+					bottomLine.lineWidth = 0.0
+					var p: NSPoint = NSZeroPoint;
+					p.y = bounds.size.height - 4
+					p.x = 4
+					bottomLine.move(to: p)
+					p.x += bounds.size.width - 8 - buttonWidth;
+					bottomLine.line(to: p)
+					bottomLine.stroke()
+
+					NSGraphicsContext.current()!.restoreGraphicsState()
+				}
+				self.drawInterior(withFrame: cellFrame, in: controlView)
+				return
+			}
+		}
+		super.draw(withFrame: cellFrame, in: controlView)
+	}
 }
 
 

@@ -31,6 +31,11 @@ open class ZDComboBox: NSTextField {
 	/// Define key for child list
 	@IBInspectable var childsKey: String?
 
+	/// When underlineField set to true the text field will be shown with underline line
+	@IBInspectable var underlineField: Bool = false
+	/// Color of the underline line
+	@IBInspectable var underlineColor: NSColor? = nil
+
 	/// NSArrayController or NSTreeController for popup items
 	@IBOutlet      var topLevelObjects: NSObjectController? {
 		didSet {
@@ -38,15 +43,15 @@ open class ZDComboBox: NSTextField {
 		}
 	}
 
-    @IBOutlet var comboboxDelegate: ZDComboBoxDelegate? {
-        didSet {
-            if comboboxDelegate != nil {
-                if let ctrl = comboboxDelegate!.getTopLevelObjects() {
-                    self.topLevelObjects = ctrl
-                }
-            }
-        }
-    }
+	@IBOutlet var comboboxDelegate: ZDComboBoxDelegate? {
+		didSet {
+			if comboboxDelegate != nil {
+				if let ctrl = comboboxDelegate!.getTopLevelObjects() {
+				    self.topLevelObjects = ctrl
+				}
+			}
+		}
+	}
     
 	override open class func cellClass() -> AnyClass? {
 		return ZDComboBoxCell.self
@@ -132,7 +137,7 @@ open class ZDComboBox: NSTextField {
 			userDelegate = delegate
 			delegate = cbDelegate
 		}
-        cbDelegate.combo = self
+		cbDelegate.combo = self
 		// setup drop down button
 		let buttonHeight = frame.size.height
 		let buttonWidth = buttonHeight*ZDComboBoxCell.buttonAspect
@@ -147,6 +152,9 @@ open class ZDComboBox: NSTextField {
 		dropDownButton!.target = self
 		dropDownButton!.action = #selector(ZDComboBox.dropDownButtonClicked(_:))
 		self.addSubview(dropDownButton!)
+		if underlineField == true {
+			self.drawsBackground = false
+		}
 	}
 
 	override open func resizeSubviews(withOldSize oldSize: NSSize) {
@@ -224,12 +232,12 @@ open class ZDComboBox: NSTextField {
         let r: NSRange = NSRange(location: insertionPoint,length: 0)
         if let w = window, let textEditor = w.fieldEditor( true, for: self) {
             textEditor.selectedRange = r
+            if underlineField {
+                textEditor.drawsBackground = false
+            }
         }
     }
-
-	open override func textDidBeginEditing(_ notification: Notification) {
-	}
-
+    
     override open func textDidEndEditing(_ notification: Notification) {
         ZDPopupWindowManager.popupManager.hidePopup()
         let insertionPoint: Int = stringValue.characters.count
