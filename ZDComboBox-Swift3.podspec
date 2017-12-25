@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "ZDComboBox-Swift3"
-  s.version      = "0.1.4"
+  s.version      = "0.1.5"
   s.summary      = "Ready to use select control for object from a list or a tree of objects."
   s.description  = <<-DESC
                    The ZDComboBox provide easy to use control to select an object from for a list or a tree of objects.
