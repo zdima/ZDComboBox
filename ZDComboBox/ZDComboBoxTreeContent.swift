@@ -20,6 +20,8 @@ class ZDComboBoxTree: ZDPopupContent, NSOutlineViewDelegate {
 	]
 
 	@IBAction func performClick(_ sender: AnyObject) {
+		let sa: NSArray = itemController.selectedObjects as NSArray
+		delegate!.selectionDidChange( sa, fromUpDown: true, userInput: filter )
 		// hide popup when user select item by click
 		ZDPopupWindowManager.popupManager.hidePopup()
 	}
@@ -53,70 +55,63 @@ class ZDComboBoxTree: ZDPopupContent, NSOutlineViewDelegate {
 
 	override func moveSelectionUp(_ up: Bool) {
 		var i: Int = tree!.selectedRow
-        while true {
-            if up {
-                i = i-1
-            } else {
-                i = i+1
-            }
-            if i < 0 || i == tree!.numberOfRows {
-                return
-            }
-            if !filter.isEmpty {
-                if let item = (tree.item(atRow: i) as! NSTreeNode).representedObject as? ZDComboBoxItem {
-                    if item.isMatch(filter: filter) {
-                        break;
-                    }
-                }
-            } else {
-                break
-            }
-        }
-        tree.selectRowIndexes( IndexSet(integer: i), byExtendingSelection: false)
+		while true {
+			if up {
+				i = i-1
+			} else {
+				i = i+1
+			}
+			if i < 0 || i == tree!.numberOfRows {
+				return
+			}
+			if !filter.isEmpty {
+				if let item = (tree.item(atRow: i) as! NSTreeNode).representedObject as? ZDComboBoxItem {
+					if item.isMatch(filter: filter) {
+						break;
+					}
+				}
+			} else {
+				break
+			}
+		}
+		tree.selectRowIndexes( IndexSet(integer: i), byExtendingSelection: false)
 		makeSelectionVisible()
 	}
 
-	func outlineViewSelectionDidChange(_ notification: Notification) {
-		if disableSelectionNotification == false {
-			let sa: NSArray = itemController.selectedObjects as NSArray
-			delegate!.selectionDidChange( sa, fromUpDown: true, userInput: filter )
-		}
+	func outlineView(_ outlineView: NSOutlineView,
+	                 shouldShowOutlineCellForItem item: Any) -> Bool {
+		return true
 	}
 
 	func outlineView(_ outlineView: NSOutlineView,
-		shouldShowOutlineCellForItem item: Any) -> Bool {
-			return true
-	}
-
-	func outlineView(_ outlineView: NSOutlineView,
-		shouldShowCellExpansionFor tableColumn: NSTableColumn?, item: Any) -> Bool {
-			return false
+	                 shouldShowCellExpansionFor tableColumn: NSTableColumn?, item: Any) -> Bool {
+		return false
 	}
 
 	func childByName(_ name: String, children: [Any],
-		indexes: NSMutableArray) -> Bool {
+	                 indexes: NSMutableArray) -> Bool {
 
-			var i: Int = 0
-			var ret: Bool = false
-			for object in children {
-				if let item: ZDComboBoxItem = object as? ZDComboBoxItem {
-					indexes.add(NSNumber(value: i as Int))
-					if item.title.lowercased().hasPrefix(name.lowercased()) {
-						ret = true
+		var i: Int = 0
+		var ret: Bool = false
+		for object in children {
+			if let item: ZDComboBoxItem = object as? ZDComboBoxItem {
+				indexes.add(NSNumber(value: i as Int))
+				if item.title.lowercased().hasPrefix(name.lowercased()) {
+					ret = true
+					break
+				} else {
+					ret = childByName(name,
+					                  children: (item.childs as NSArray).sortedArray(using: recordSortDescriptors),
+					                  indexes: indexes)
+					if ret == true {
 						break
-					} else {
-						ret = childByName(name,
-							children: (item.childs as NSArray).sortedArray(using: recordSortDescriptors),
-							indexes: indexes)
-						if ret == true {
-							break
-						}
-						indexes.removeLastObject()
 					}
+					indexes.removeLastObject()
 				}
-				i = i+1
 			}
-			return ret
+			i = i+1
+		}
+		return ret
 	}
 
 	override func moveSelectionTo(_ string: String?, filtered: Bool) -> NSString? {
@@ -172,5 +167,5 @@ class ZDComboBoxTree: ZDPopupContent, NSOutlineViewDelegate {
 	override func selectedObjects() -> [AnyObject] {
 		return itemController.selectedObjects as [AnyObject]
 	}
-
+	
 }

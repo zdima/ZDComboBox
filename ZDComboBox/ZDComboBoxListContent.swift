@@ -20,6 +20,8 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 	]
 
 	@IBAction func performClick(_ sender: AnyObject?) {
+		let sa: NSArray = itemController.selectedObjects as NSArray
+		delegate!.selectionDidChange( sa, fromUpDown: true, userInput: filter)
 		// hide popup when user select item by click
 		ZDPopupWindowManager.popupManager.hidePopup()
 	}
@@ -49,72 +51,65 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 	}
 
 	override func moveSelectionUp(_ up: Bool) {
-        var i: Int = table!.selectedRow
-        while true {
-            if up {
-                i = i-1
-            } else {
-                i = i+1
-            }
-            if i < 0 || i == table!.numberOfRows {
-                return
-            }
-            if !filter.isEmpty {
-                if let item = (itemController.content as! NSArray).object(at: i) as? ZDComboBoxItem {
-                    if item.isMatch(filter: filter) {
-                        break;
-                    }
-                }
-            } else {
-                break
-            }
-        }
+		var i: Int = table!.selectedRow
+		while true {
+			if up {
+				i = i-1
+			} else {
+				i = i+1
+			}
+			if i < 0 || i == table!.numberOfRows {
+				return
+			}
+			if !filter.isEmpty {
+				if let item = (itemController.content as! NSArray).object(at: i) as? ZDComboBoxItem {
+					if item.isMatch(filter: filter) {
+						break;
+					}
+				}
+			} else {
+				break
+			}
+		}
 		table.selectRowIndexes( IndexSet(integer: i), byExtendingSelection: false)
 		makeSelectionVisible()
 	}
 
-	func tableViewSelectionDidChange(_ notification: Notification) {
-		if disableSelectionNotification == false {
-			let sa: NSArray = itemController.selectedObjects as NSArray
-			delegate!.selectionDidChange( sa, fromUpDown: true, userInput: filter)
-		}
-	}
-
 	func tableView(_ tableView: NSTableView,
-		shouldShowCellExpansionFor tableColumn: NSTableColumn?,
-		row: Int) -> Bool {
-			return false
+	               shouldShowCellExpansionFor tableColumn: NSTableColumn?,
+	               row: Int) -> Bool {
+		return false
 	}
 
 	func childByName(_ name: String, children: [Any],
-		indexes: NSMutableArray) -> Bool {
+	                 indexes: NSMutableArray) -> Bool {
 
-			var i: Int = 0
-			var ret: Bool = false
-        
-			if name.isEmpty {
-				return false
-			}
-        
-			for object in children {
-				if let item: ZDComboBoxItem = object as? ZDComboBoxItem {
-					indexes.add(NSNumber(value: i as Int))
-					if item.title.lowercased().hasPrefix(name.lowercased()) {
-						ret = true
+		var i: Int = 0
+		var ret: Bool = false
+
+		if name.isEmpty {
+			return false
+		}
+
+		for object in children {
+			if let item: ZDComboBoxItem = object as? ZDComboBoxItem {
+				indexes.add(NSNumber(value: i as Int))
+				if item.title.lowercased().hasPrefix(name.lowercased()) {
+					ret = true
+					break
+				} else {
+					ret = childByName(name,
+					                  children: (item.childs as NSArray).sortedArray(using: recordSortDescriptors),
+					                  indexes: indexes)
+					if ret == true {
 						break
-					} else {
-						ret = childByName(name,
-							children: (item.childs as NSArray).sortedArray(using: recordSortDescriptors),
-							indexes: indexes)
-						if ret == true {
-							break
-						}
-						indexes.removeLastObject()
 					}
+					indexes.removeLastObject()
 				}
-				i = i+1
 			}
-			return ret
+			i = i+1
+		}
+		return ret
 	}
 
 	override func moveSelectionTo(_ string: String?, filtered: Bool) -> NSString? {
@@ -148,7 +143,7 @@ class ZDComboBoxList: ZDPopupContent, NSTableViewDelegate {
 				}
 
 				if let stringIdx = selection {
-                    let idx: Int = stringIdx[0]
+					let idx: Int = stringIdx[0]
 					itemController.setSelectionIndex(idx)
 				} else {
 					itemController.setSelectionIndex(NSNotFound)

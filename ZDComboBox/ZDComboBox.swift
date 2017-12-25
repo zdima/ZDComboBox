@@ -167,7 +167,10 @@ open class ZDComboBox: NSTextField {
 		super.resizeSubviews(withOldSize: oldSize)
 	}
 
+	var dropDownButtonClickedProcessing = false
+
 	func dropDownButtonClicked(_ sender: AnyObject) {
+		dropDownButtonClickedProcessing = true
 		if dropDownButton!.state == NSOffState {
 			ZDPopupWindowManager.popupManager.hidePopup()
 		} else {
@@ -180,6 +183,7 @@ open class ZDComboBox: NSTextField {
 				}
 			}
 		}
+		dropDownButtonClickedProcessing = false
 	}
 
 	override open func setValue(_ value: Any?, forKey key: String) {
@@ -196,29 +200,29 @@ open class ZDComboBox: NSTextField {
 			super.setValue(value, forKey: key)
 		}
 	}
-    
-    var myObjectValue: NSObject?
-    
-    open override var objectValue: Any? {
-        set {
-            if newValue == nil {
-                super.objectValue = nil
-                return
-            }
-            if let cbdelegate = delegate as? ZDComboFieldDelegate {
-                myObjectValue = cbdelegate.objectValue(by: newValue as AnyObject) as! NSObject?
-            }
-            if myObjectValue != nil {
-                super.objectValue = myObjectValue!.value(forKey: displayKey! )
-            } else {
-                super.objectValue = ""
-            }
-            return
-        }
-        get {
-            return myObjectValue
-        }
-    }
+
+	var myObjectValue: NSObject?
+
+	open override var objectValue: Any? {
+		set {
+			if newValue == nil {
+				super.objectValue = nil
+				return
+			}
+			if let cbdelegate = delegate as? ZDComboFieldDelegate {
+				myObjectValue = cbdelegate.objectValue(by: newValue as AnyObject) as! NSObject?
+			}
+			if myObjectValue != nil {
+				super.objectValue = myObjectValue!.value(forKey: displayKey! )
+			} else {
+				super.objectValue = ""
+			}
+			return
+		}
+		get {
+			return myObjectValue
+		}
+	}
 
 	dynamic var selectedObject: Any? {
 		didSet {
@@ -226,42 +230,44 @@ open class ZDComboBox: NSTextField {
 		}
 	}
 
-    override open func selectText(_ sender: Any?) {
-        super.selectText(sender)
-        let insertionPoint: Int = stringValue.characters.count
-        let r: NSRange = NSRange(location: insertionPoint,length: 0)
-        if let w = window, let textEditor = w.fieldEditor( true, for: self) {
-            textEditor.selectedRange = r
-            if underlineField {
-                textEditor.drawsBackground = false
-            }
-        }
-    }
-    
-    override open func textDidEndEditing(_ notification: Notification) {
-        ZDPopupWindowManager.popupManager.hidePopup()
-        let insertionPoint: Int = stringValue.characters.count
-        let r: NSRange = NSRange(location: insertionPoint,length: 0)
-        if let textEditor = window!.fieldEditor( true, for: self) {
-            textEditor.selectedRange = r
-        }
-		if let popupDelegate = delegate as? ZDPopupContentDelegate {
-			popupDelegate.updateBindingProperty()
+	override open func selectText(_ sender: Any?) {
+		super.selectText(sender)
+		let insertionPoint: Int = stringValue.characters.count
+		let r: NSRange = NSRange(location: insertionPoint,length: 0)
+		if let w = window, let textEditor = w.fieldEditor( true, for: self) {
+			textEditor.selectedRange = r
+			if underlineField {
+				textEditor.drawsBackground = false
+			}
 		}
-        super.textDidEndEditing(notification)
-    }
+	}
+
+	override open func textDidEndEditing(_ notification: Notification) {
+		ZDPopupWindowManager.popupManager.hidePopup()
+		let insertionPoint: Int = stringValue.characters.count
+		let r: NSRange = NSRange(location: insertionPoint,length: 0)
+		if let textEditor = window!.fieldEditor( true, for: self) {
+			textEditor.selectedRange = r
+		}
+		if let popupDelegate = delegate as? ZDPopupContentDelegate {
+			if !popupDelegate.updateBindingProperty() {
+				return
+			}
+		}
+		super.textDidEndEditing(notification)
+	}
 
 	fileprivate func onObjectCollectionChange(
 		_ oldValue: NSObjectController?,
 		_ newValue: NSObjectController?) {
-			setContentRootNode()
-			if let oldController = oldValue {
-				oldController.removeObserver(self, forKeyPath: "content")
-			}
-			if let newController = topLevelObjects {
-				let options: NSKeyValueObservingOptions = [NSKeyValueObservingOptions.old, NSKeyValueObservingOptions.new]
-				newController.addObserver( self, forKeyPath: "content",
-					options: options, context: nil)
-			}
+		setContentRootNode()
+		if let oldController = oldValue {
+			oldController.removeObserver(self, forKeyPath: "content")
+		}
+		if let newController = topLevelObjects {
+			let options: NSKeyValueObservingOptions = [NSKeyValueObservingOptions.old, NSKeyValueObservingOptions.new]
+			newController.addObserver( self, forKeyPath: "content",
+			                           options: options, context: nil)
+		}
 	}
 }
