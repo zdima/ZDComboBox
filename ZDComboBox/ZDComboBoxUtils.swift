@@ -419,7 +419,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 					if objectValueAsManagedObject.isInserted {
 						do {
 							try objectValueAsManagedObject.managedObjectContext!.save()
-						} catch let error as NSError {
+						} catch _ {
 							Swift.print( "failed to save context of the newly created object" )
 						}
 						if let refreshable = combobox.topLevelObjects as? HasRefresh {
