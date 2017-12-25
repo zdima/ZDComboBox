@@ -238,8 +238,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 		guard allowSelectionUpdate else {return}
 		if let selection: [AnyObject] = selector as? [AnyObject],
 			let o = selection.first as? ZDComboBoxItem,
-			let comboBox = combo,
-			let editor: NSTextView = combo!.currentEditor() as? NSTextView
+			let comboBox = combo
 		{
 			if updown {
 				comboBox.stringValue = o.title
@@ -326,9 +325,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 				return
 			}
 			let _ = showPopupForControl(combo)
-			if let editor: NSTextView = control.currentEditor() as? NSTextView {
-				let _ = popupContent!.moveSelectionTo(control.stringValue, filtered: true)
-			}
+			let _ = popupContent!.moveSelectionTo(control.stringValue, filtered: true)
 		}
 		didDelete = false
 	}
@@ -382,12 +379,6 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 			guard let field = combo else { return false }
 			if field.stringValue.characters.count == 0 { return false }
 			if selection.count == 0 { return false }
-			var filter: String?
-			if let cb = popupContent as? ZDComboBoxTree {
-				filter = cb.filter
-			} else {
-				filter = nil
-			}
 			ZDPopupWindowManager.popupManager.hidePopup()
 		}
 		if commandSelector == #selector(NSResponder.insertNewline(_:)) {
@@ -481,7 +472,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 			if let node = objectWith(displayKey: combobox.displayKey, equal: stringValue,
 			                         in: ((combobox.topLevelObjects as! NSTreeController).arrangedObjects as AnyObject).children as [NSTreeNode]? ) {
 
-				return managed(objectInContext: (node as! NSTreeNode).representedObject as! AnyObject?)
+				return managed(objectInContext: (node as! NSTreeNode).representedObject as AnyObject?)
 			}
 		}
 
@@ -506,7 +497,7 @@ class ZDComboFieldDelegate: NSObject, NSTextFieldDelegate, ZDPopupContentDelegat
 				return true
 			}
 
-			var objectValue = self.objectValue(by: combobox.stringValue as AnyObject?)
+			let objectValue = self.objectValue(by: combobox.stringValue as AnyObject?)
 			if objectValue == nil {
 				return false
 			}
